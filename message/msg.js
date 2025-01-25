@@ -47,7 +47,7 @@ module.exports = async (conn, msg, m) => {
 		const groupName = isGroup ? groupMetadata.subject : ''
 		const sender = isGroup ? msg.key.participant ? msg.key.participant : msg.participant : msg.key.remoteJid;
 		const userId = sender.split("@")[0]
-		const isOwner = ["62xxx@s.whatsapp.net"].includes(sender) ? true : false;
+		const isOwner = ["6289601671818@s.whatsapp.net"].includes(sender) ? true : false;
 		const pushname = msg.pushName;
 		const q = chats.slice(command.length + 1, chats.length);
 		const botNumber = conn.user.id.split(":")[0] + "@s.whatsapp.net";
