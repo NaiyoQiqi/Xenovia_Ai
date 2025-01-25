@@ -178,6 +178,16 @@ _Media yang di privasi, tidak dapat di unduh._
                     }
                 }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break;
+              case '#runtime':
+        if (!isOwner) return reply(`Maaf, ini hanya dapat digunakan oleh Owner Bot`);
+        try {
+            let evaled = await eval(q);
+            if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
+            reply(`${evaled}`);
+        } catch (e) {
+            reply(`${e}`);
+        }
+        break;
             case '#twtdl':
             case '#xdl':
                 if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`);
