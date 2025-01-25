@@ -1,5 +1,5 @@
 {
-  "name": "Keishu-md",
+  "name": "Xenovia AI",
   "version": "1.0.0",
   "description": "Simple WhatsApp Bot",
   "main": "index.js",
@@ -10,10 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js --pairing"
   },
-  "author": "febb",
+  "author": "Feyy",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
+    "@hapi/boom": "^10.0.1",
     "@whiskeysockets/baileys": "6.5.0",
     "axios": "^0.24.0",
     "chalk": "^2.4.2",
