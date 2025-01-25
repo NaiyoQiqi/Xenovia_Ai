@@ -23,7 +23,7 @@ const imgbb = require("imgbb-uploader");
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("AIzaSyAisqsjV0u7bO2Rt4t4Ofu");
+const genAI = new GoogleGenerativeAI("AIzaSyD76DoclX_3DHscKMxDtaP876Thr4fFOCA");
 const model = genAI.getGenerativeModel({
    model: "gemini-1.5-flash",
    systemInstruction: "Kamu adalah Model AI. Bernama Xenovia AI"
