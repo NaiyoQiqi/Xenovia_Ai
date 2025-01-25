@@ -158,7 +158,7 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 _Media yang di privasi, tidak dapat di unduh._
 
 (n) tolong gunakan bot dengan bijak.
-*Bot Created By @febbyadityan*`;
+*Bot Created By @Feyy.S15*`;
                 reply(textReply);
                 break;
             case '#igdl':
