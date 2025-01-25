@@ -1,9 +1,3 @@
-/**
-   * @febbyadityan
-   * github.com/FebbAdityaN
-   * Please don't delete it, to respect the author.
-*/
-
 "use strict";
 const {
 	default: makeWASocket,
@@ -66,14 +60,14 @@ conn.ev.on('connection.update', (update) => {
 
 function title() {
       console.clear()
-	  console.log(chalk.bold.green(figlet.textSync('Bot Keishu', {
+	  console.log(chalk.bold.green(figlet.textSync('Xenovia AI', {
 		font: 'Standard',
 		horizontalLayout: 'default',
 		verticalLayout: 'default',
 		width: 80,
 		whitespaceBreak: false
 	})))
-	console.log(chalk.yellow(`\n                      ${chalk.yellow('[ Created By Febb ]')}\n\n${chalk.red('WhatsApp Bot')} : ${chalk.white('Keishu')}\n${chalk.red('Follow Insta Dev')} : ${chalk.white('@febbyadityan')}\n${chalk.red('Message Me On WhatsApp')} : ${chalk.white('+62 857-7026-9605')}\n`))
+	console.log(chalk.yellow(`\n                      ${chalk.yellow('[ Created By Feyy ]')}\n\n${chalk.red('Gemini Asisten')} : ${chalk.white('Xenovia')}\n${chalk.red('Follow Insta Dev')} : ${chalk.white('@feyy.S15')}\n${chalk.red('Message Me On WhatsApp')} : ${chalk.white('6289601671818')}\n`))
 }
 
 /**
