@@ -23,10 +23,10 @@ const imgbb = require("imgbb-uploader");
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("INPUT_YOUR_APIKEY");
+const genAI = new GoogleGenerativeAI("AIzaSyAisqsjV0u7bO2Rt4t4Ofu");
 const model = genAI.getGenerativeModel({
    model: "gemini-1.5-flash",
-   systemInstruction: "Kamu adalah seorang Asisten. Bernama Keishu"
+   systemInstruction: "Kamu adalah Model AI. Bernama Xenovia AI"
 });
 
 moment.tz.setDefault("Asia/Jakarta").locale("id");
@@ -164,7 +164,7 @@ _Media yang di privasi, tidak dapat di unduh._
 			case '#igdl':
 				if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`)
 				insta(q).then(dataIG => {
-				reactMessage("❤️")
+				reactMessage("")
 				if (dataIG.image) {
 				  for (let i of dataIG.image) {
 				     conn.sendMessage(from, {image: {url: i}}, {quoted: msg})
@@ -182,7 +182,7 @@ _Media yang di privasi, tidak dapat di unduh._
 			case '#xdl':
 				if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`)
 				gifted.giftedtwitter(q).then(data => {
-				   reactMessage("❤️")
+				   reactMessage("")
 				   reply('Tunggu sebentar, sedang mengunduh...')
 				   var capt = `\`\`\`Enjoy\`\`\``
 				   conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg })
@@ -196,7 +196,7 @@ _Media yang di privasi, tidak dapat di unduh._
 				fbdl(q).then(data => {
 				   var dataFB = `\`\`\`Media Ditemukan\`\`\`\n*Resolusi:* ${data.data[0].resolution}`
 				   conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB }, { quoted: msg })
-				   reactMessage("❤️")
+				   reactMessage("")
 				   }).catch(e => {
 				   console.log(e)
 				   reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.')})
@@ -205,7 +205,7 @@ _Media yang di privasi, tidak dapat di unduh._
 			case '#tiktok':
 			case '#tiktokdl':
 				if (args.length < 2) return reply(`Input link untuk mendownload video dari TikTok.`)
-				reactMessage("❤️")
+				reactMessage("")
 				ttdl(q).then(data => {
 				   var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``
 				   conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg })
@@ -218,7 +218,7 @@ _Media yang di privasi, tidak dapat di unduh._
 			case '#mp3':
 				if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
 				var url = await yts(q)
-				reactMessage("❤️")
+				reactMessage("")
 				ytmp3(url.all[0].url).then(data => {
 					var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
 					conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
@@ -229,7 +229,7 @@ _Media yang di privasi, tidak dapat di unduh._
 			case '#mp4':
 			    if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`)
 				var url = await yts(q)
-				reactMessage("❤️")
+				reactMessage("")
 			    ytmp4(url.all[0].url).then(data => {
 					reply('Tunggu sebentar, sedang mendownload...')
 					var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``
@@ -264,7 +264,7 @@ _Media yang di privasi, tidak dapat di unduh._
 				if (isQuotedImage) {
 					const ran = getRandom('.jpg')
 					const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`)
-					const img = await imgbb("INPUT_YOUR_APIKEY", `./lib/${ran}`)
+					const img = await imgbb("c55d06d9863b52bb394d7d8407552754", `./lib/${ran}`)
 					const imgData = img.display_url.split(/\//);
 					const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
 					await new Promise(r => setTimeout(r, 3000));
@@ -279,7 +279,7 @@ _Media yang di privasi, tidak dapat di unduh._
 					]);
 					reply(result.response.text().trim())
 					fs.unlinkSync(media)
-					return reactMessage("❤️")
+					return reactMessage("")
 				} else {
 					const chat = model.startChat(conn.gemini[sender])
 					let resdata = await chat.sendMessage(chats);
@@ -295,7 +295,7 @@ _Media yang di privasi, tidak dapat di unduh._
 						}]
 					})
 					reply(resdata.response.text().trim());
-					return reactMessage("❤️")
+					return reactMessage("")
 				}
 			} catch(e) {
 				console.log(e)
