@@ -224,16 +224,19 @@ _Media yang di privasi, tidak dapat di unduh._
                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.')})
                 break
             case 'ytmp3':
-            case 'mp3':
-                if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
-                var url = await yts(q)
-                reactMessage("")
-                ytmp3(url.all[0].url).then(data => {
-                    var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
-                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
-                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg })
-                }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
-                break
+case 'mp3':
+           case 'play':
+    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
+    var url = await yts(q)
+    reactMessage("❤️")
+    ytmp3(url.all[0].url).then(data => {
+        var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
+        conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
+
+        // Mengirim file audio sebagai voice note
+        conn.sendMessage(from, { audio: { url: data.audio }, mimetype: 'audio/mp4', ptt: true }, { quoted: msg })
+    }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
+    break
             case 'ytmp4':
             case 'mp4':
                 if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`)
