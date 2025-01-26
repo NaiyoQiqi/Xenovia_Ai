@@ -17,6 +17,9 @@ const imgbb = require("imgbb-uploader");
 const ffmpeg = require('fluent-ffmpeg');
 const streamBuffers = require('stream-buffers');
 
+// Pastikan PATH ffmpeg diatur dengan benar
+ffmpeg.setFfmpegPath('/usr/bin/ffmpeg'); // Sesuaikan dengan path ffmpeg di sistem Anda
+
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI("AIzaSyD76DoclX_3DHscKMxDtaP876Thr4fFOCA");
@@ -46,6 +49,7 @@ function compressAudio(inputBuffer, callback) {
         })
         .pipe(outputBuffer);
 }
+
 
 module.exports = async (conn, msg, m) => {
     try {
