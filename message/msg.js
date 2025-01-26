@@ -18,7 +18,7 @@ const ffmpeg = require('fluent-ffmpeg');
 const streamBuffers = require('stream-buffers');
 
 // Pastikan PATH ffmpeg diatur dengan benar
-ffmpeg.setFfmpegPath('/usr/bin/ffmpeg'); // Sesuaikan dengan path ffmpeg di sistem Anda
+ffmpeg.setFfmpegPath('/usr/local/bin/ffmpeg'); // Sesuaikan dengan path ffmpeg di sistem Anda
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
