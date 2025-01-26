@@ -14,6 +14,7 @@ const { ytmp4, ytmp3, ttdl, fbdl } = require("ruhend-scraper");
 const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
+const ffmpeg = require('fluent-ffmpeg');
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -24,6 +25,20 @@ const model = genAI.getGenerativeModel({
 });
 
 moment.tz.setDefault("Asia/Jakarta").locale("id");
+
+function compressAudio(inputPath, outputPath, callback) {
+    ffmpeg(inputPath)
+        .audioBitrate('128k') // Mengatur bitrate audio
+        .on('end', () => {
+            console.log('File audio berhasil dikompresi');
+            callback(null);
+        })
+        .on('error', (err) => {
+            console.log('Terjadi kesalahan saat kompresi:', err);
+            callback(err);
+        })
+        .save(outputPath);
+}
 
 module.exports = async (conn, msg, m) => {
     try {
@@ -123,11 +138,6 @@ module.exports = async (conn, msg, m) => {
         }
         if (isGroup && isCmd && !fromMe) {
             console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", color(groupName));
-        }
-
-        // Initial greeting for new chats
-        if (!isGroup && !fromMe && !isCmd) {
-            reply(`Hai ${pushname}, Saya Xenovia AI! Ada yang bisa saya bantu?`);
         }
         
         switch (command) {
