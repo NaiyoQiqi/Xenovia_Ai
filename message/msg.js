@@ -36,7 +36,15 @@ module.exports = async (conn, msg, m) => {
         const messageType = Object.keys(msg.message)[0];
         const from = msg.key.remoteJid;
         const msgKey = msg.key;
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : [...]
+        const chats = type === "conversation" && msg.message.conversation 
+            ? msg.message.conversation 
+            : type === "imageMessage" && msg.message.imageMessage.caption 
+            ? msg.message.imageMessage.caption 
+            : type === "videoMessage" && msg.message.videoMessage.caption 
+            ? msg.message.videoMessage.caption 
+            : type === "extendedTextMessage" && msg.message.extendedTextMessage.text 
+            ? msg.message.extendedTextMessage.text 
+            : "";
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
@@ -102,7 +110,7 @@ module.exports = async (conn, msg, m) => {
 
         const fakereply = async (chat1, target, chat2) => {
             await delay(5000);
-            conn.sendMessage(from, { text: chat1, ai: true }, { quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 } [...]
+            conn.sendMessage(from, { text: chat1, ai: true }, { quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 } } });
         };
 
         const reactMessage = async (react) => {
@@ -124,10 +132,10 @@ module.exports = async (conn, msg, m) => {
         conn.sendPresenceUpdate("available", from);
 
         if (!isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname, "lightblue"));
         }
         if (isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname, "lightblue"));
         }
 
         switch (command) {
@@ -179,34 +187,34 @@ _Media yang di privasi, tidak dapat di unduh._
                     }
                 }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break;
-              case '#runtime':
-    try {
-        const uptime = process.uptime(); // Menghitung uptime dalam detik
-        const days = Math.floor(uptime / (60 * 60 * 24));
-        const hours = Math.floor((uptime % (60 * 60 * 24)) / (60 * 60));
-        const minutes = Math.floor((uptime % (60 * 60)) / 60);
-        const seconds = Math.floor(uptime % 60);
+            case '#runtime':
+                try {
+                    const uptime = process.uptime(); // Menghitung uptime dalam detik
+                    const days = Math.floor(uptime / (60 * 60 * 24));
+                    const hours = Math.floor((uptime % (60 * 60 * 24)) / (60 * 60));
+                    const minutes = Math.floor((uptime % (60 * 60)) / 60);
+                    const seconds = Math.floor(uptime % 60);
 
-        const runtimeMessage = `Bot telah berjalan selama:\n${days} hari, ${hours} jam, ${minutes} menit, dan ${seconds} detik.`;
-        reply(runtimeMessage);
-    } catch (e) {
-        reply(`Terjadi kesalahan saat mengambil runtime: ${e}`);
-    }
-    break;
+                    const runtimeMessage = `Bot telah berjalan selama:\n${days} hari, ${hours} jam, ${minutes} menit, dan ${seconds} detik.`;
+                    reply(runtimeMessage);
+                } catch (e) {
+                    reply(`Terjadi kesalahan saat mengambil runtime: ${e}`);
+                }
+                break;
 
-case '#ping':
-    const start = Date.now();
-    reply('Ping...')
-        .then(() => {
-            const end = Date.now();
-            const latency = end - start;
-            const pingMessage = `Pong! Latency: ${latency}ms`;
-            reply(pingMessage);
-        })
-        .catch((e) => {
-            reply(`Terjadi kesalahan saat mengukur ping: ${e}`);
-        });
-    break;
+            case '#ping':
+                const start = Date.now();
+                reply('Ping...')
+                    .then(() => {
+                        const end = Date.now();
+                        const latency = end - start;
+                        const pingMessage = `Pong! Latency: ${latency}ms`;
+                        reply(pingMessage);
+                    })
+                    .catch((e) => {
+                        reply(`Terjadi kesalahan saat mengukur ping: ${e}`);
+                    });
+                break;
             case '#twtdl':
             case '#xdl':
                 if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`);
