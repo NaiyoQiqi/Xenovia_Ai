@@ -15,6 +15,7 @@ const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
 const ffmpeg = require('fluent-ffmpeg');
+const streamBuffers = require('stream-buffers');
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -26,18 +27,24 @@ const model = genAI.getGenerativeModel({
 
 moment.tz.setDefault("Asia/Jakarta").locale("id");
 
-function compressAudio(inputPath, outputPath, callback) {
-    ffmpeg(inputPath)
+function compressAudio(inputBuffer, callback) {
+    const outputBuffer = new streamBuffers.WritableStreamBuffer({
+        initialSize: (100 * 1024), // Start with 100 kilobytes.
+        incrementAmount: (10 * 1024) // Grow by 10 kilobytes each time buffer overflows.
+    });
+
+    ffmpeg(inputBuffer)
         .audioBitrate('128k') // Mengatur bitrate audio
+        .format('mp3')
         .on('end', () => {
             console.log('File audio berhasil dikompresi');
-            callback(null);
+            callback(null, outputBuffer.getContents());
         })
         .on('error', (err) => {
             console.log('Terjadi kesalahan saat kompresi:', err);
             callback(err);
         })
-        .save(outputPath);
+        .pipe(outputBuffer);
 }
 
 module.exports = async (conn, msg, m) => {
@@ -244,16 +251,15 @@ _Media yang di privasi, tidak dapat di unduh._
         conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
 
         // Mengompresi file audio sebelum mengirim sebagai voice note
-                    const inputPath = data.audio;
-                    const outputPath = `./compressed_${getRandom('.mp3')}`;
-                    compressAudio(inputPath, outputPath, (err) => {
+                    const inputBuffer = Buffer.from(data.audio, 'base64');
+                    compressAudio(inputBuffer, (err, outputBuffer) => {
                         if (err) {
                             reply('Maaf terjadi kesalahan saat kompresi audio.');
                         } else {
-                            conn.sendMessage(from, { audio: { url: outputPath }, mimetype: 'audio/mp4', ptt: true }, { quoted: msg })
+                            conn.sendMessage(from, { audio: outputBuffer, mimetype: 'audio/mp4', ptt: true }, { quoted: msg });
                         }
                     });
-                }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
+                }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break
             case 'ytmp4':
             case 'mp4':
