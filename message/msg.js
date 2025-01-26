@@ -36,7 +36,7 @@ module.exports = async (conn, msg, m) => {
         const messageType = Object.keys(msg.message)[0];
         const from = msg.key.remoteJid;
         const msgKey = msg.key;
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : "";
+        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : [...]
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
@@ -97,12 +97,12 @@ module.exports = async (conn, msg, m) => {
         const reply = async (teks) => {
             // Tambahkan delay 5 detik sebelum merespon
             await delay(5000);
-            conn.sendMessage(from, { text: teks }, { quoted: msg });
+            conn.sendMessage(from, { text: teks, ai: true }, { quoted: msg });
         };
 
         const fakereply = async (chat1, target, chat2) => {
             await delay(5000);
-            conn.sendMessage(from, { text: chat1 }, { quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 } } });
+            conn.sendMessage(from, { text: chat1, ai: true }, { quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 } [...]
         };
 
         const reactMessage = async (react) => {
@@ -111,7 +111,8 @@ module.exports = async (conn, msg, m) => {
                 react: {
                     text: react,
                     key: msg.key
-                }
+                },
+                ai: true
             };
             conn.sendMessage(from, reactMsg);
         };
@@ -123,10 +124,10 @@ module.exports = async (conn, msg, m) => {
         conn.sendPresenceUpdate("available", from);
 
         if (!isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...
         }
         if (isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", color(groupName, "lightblue"));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...
         }
 
         switch (command) {
@@ -167,13 +168,13 @@ _Media yang di privasi, tidak dapat di unduh._
                     reactMessage("");
                     if (dataIG.image) {
                         for (let i of dataIG.image) {
-                            conn.sendMessage(from, { image: { url: i } }, { quoted: msg });
+                            conn.sendMessage(from, { image: { url: i }, ai: true }, { quoted: msg });
                         }
                     }
                     if (dataIG.video) {
                         for (let v of dataIG.video) {
                             new Promise(resolve => setTimeout(resolve, 2000));
-                            conn.sendMessage(from, { video: { url: v.video } }, { quoted: msg });
+                            conn.sendMessage(from, { video: { url: v.video }, ai: true }, { quoted: msg });
                         }
                     }
                 }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
@@ -213,7 +214,7 @@ case '#ping':
                     reactMessage("");
                     reply('Tunggu sebentar, sedang mengunduh...');
                     var capt = `\`\`\`Enjoy\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg });
+                    conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt, ai: true }, { quoted: msg });
                     console.log(data.results[1].url);
                 }).catch(e => {
                     reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
@@ -223,7 +224,7 @@ case '#ping':
                 if (args.length < 2) return reply(`Input link untuk mendownload media dari Facebook.`);
                 fbdl(q).then(data => {
                     var dataFB = `\`\`\`Media Ditemukan\`\`\`\n*Resolusi:* ${data.data[0].resolution}`;
-                    conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB }, { quoted: msg });
+                    conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB, ai: true }, { quoted: msg });
                     reactMessage("");
                 }).catch(e => {
                     console.log(e);
@@ -237,7 +238,7 @@ case '#ping':
                 reactMessage("");
                 ttdl(q).then(data => {
                     var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg });
+                    conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT, ai: true }, { quoted: msg });
                     reply(`Jika kamu ingin mendownload background musik nya:\n${data.music}\n\n\`\`\`Sedang mengirim video...\`\`\``);
                 }).catch(e => {
                     console.log(e);
@@ -251,8 +252,8 @@ case '#ping':
                 reactMessage("");
                 ytmp3(url.all[0].url).then(data => {
                     var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
-                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
+                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio, ai: true }, { quoted: msg });
+                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3', ai: true }, { quoted: msg });
                 }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break;
             case '#ytmp4':
@@ -263,7 +264,7 @@ case '#ping':
                 ytmp4(url.all[0].url).then(data => {
                     reply('Tunggu sebentar, sedang mendownload...');
                     var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
+                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo, ai: true }, { quoted: msg });
                 }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break;
             case '>>':
