@@ -263,66 +263,37 @@ module.exports = async (conn, msg, m) => {
         switch (command) {
 
             case '#start':
+case '#menu':
+case '#help':
+    const buttons = [
+        { buttonId: '#mp3', buttonText: { displayText: 'Download MP3' }, type: 1 },
+        { buttonId: '#mp4', buttonText: { displayText: 'Download MP4' }, type: 1 },
+    ];
 
-            case '#menu':
-
-            case '#help':
-
-                var textReply = `Hai ${pushname} 👋🏻
+    const buttonMessage = {
+        text: `Hai ${pushname} 👋🏻
 
 Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini, dan juga di support oleh kecerdasan buatan (AI).
-
-
 
 ✨ *GEMINI AI* adalah platform kecerdasan buatan (AI) dari Google yang dapat membantu berbagai tugas dan data pengguna.
 
 • *Penggunaan* : _Ajukan pertanyaan langsung tanpa perintah apa pun_
 
-
-
 📢 *YOUTUBE DOWNLOADER*
-
 • *Perintah* : #mp3 / #mp4 _input judul_
-
 • *Contoh* : #mp3 / #mp4 birds of a feather
-
-💌 *INSTAGRAM DOWNLOADER*
-
-• *Perintah* : #igdl _link insta_
-
-• *Contoh* : #igdl www.instagram.com/p/xxx/
-
-💃🏻 *TIKTOK DOWNLOADER*
-
-• *Perintah* : #ttdl _link tiktok_
-
-• *Contoh* : #ttdl https://vt.tiktok.com/xxx/
-
-👥 *FACEBOOK DOWNLOADER*
-
-• *Perintah* : #fbdl _link fb_
-
-• *Contoh* : #fbdl www.facebook.com/reel/xxx
-
-👀 *TWITTER/X DOWNLOADER*
-
-• *Perintah* : #xdl / #twtdl _link twitter_
-
-• *Contoh* : #xdl https://x.com/link
-
-
 
 _Media yang di privasi, tidak dapat di unduh._
 
-
-
 (n) tolong gunakan bot dengan bijak.
 
-*Bot Created By @Feyy.S15*`;
+*Bot Created By @Feyy.S15*`,
+        buttons: buttons,
+        footer: 'Bot Created By @Feyy.S15',
+    };
 
-                reply(textReply);
-
-                break;
+    conn.sendMessage(from, buttonMessage, { quoted: msg });
+    break;
 
             case '#igdl':
 
