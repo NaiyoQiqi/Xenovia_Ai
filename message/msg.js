@@ -28,6 +28,49 @@ moment.tz.setDefault("Asia/Jakarta").locale("id");
 // Fungsi delay
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// Tambahkan kode ini setelah bagian fungsi delay
+if (budy && !m.isNewsletter) {
+    if (!m.isGroup && isCmd && !m.key.fromMe) {
+        db.data.users[m.sender].pctime = new Date().getTime(); // Update time saat ada perintah
+    }
+
+    if (!m.isGroup && !isCmd && !m.key.fromMe) {
+        const lastInteraction = new Date().getTime() - db.data.users[m.sender].pctime;
+        if (lastInteraction > 21600000) {  // Jika lebih dari 6 jam
+            db.data.users[m.sender].pctime = new Date().getTime();
+
+            if (m.sender === '6285655548594@s.whatsapp.net') {
+                await conn.sendMessage(m.chat, { 
+                    text: `Halo kak ${pushname}, senang banget bisa ngobrol lagi! Ada yang bisa aku bantu hari ini? 😊`, 
+                    ai: true 
+                });
+                conn.sendMessage(m.chat, { 
+                    text: `Ketik *.menu* untuk melihat menu dan pilih fitur yang kamu butuhkan! 💬`, 
+                    ai: true 
+                });
+            } else if (m.sender === '6283834312169@s.whatsapp.net') {
+                await conn.sendMessage(m.chat, { 
+                    text: `Ehh... ada kak Viona nih, kakak orang yang di spesialin owner aku itu kan? 🤔`, 
+                    ai: true 
+                });
+                conn.sendMessage(m.chat, { 
+                    text: `Untuk mulai, ketik *.menu* agar aku bisa bantu dengan fitur-fitur yang ada! 💬`, 
+                    ai: true 
+                });
+            } else {
+                await conn.sendMessage(m.chat, { 
+                    text: `Halo kak ${pushname}, lama gak ngobrol nih! Ada yang bisa aku bantu? 😊`, 
+                    ai: true 
+                });
+                conn.sendMessage(m.chat, { 
+                    text: `Ketik *.menu* untuk melihat menu yang tersedia dan pilih fitur yang kamu butuhkan! 💬`, 
+                    ai: true 
+                });
+            }
+        }
+    }
+}
+   
 module.exports = async (conn, msg, m) => {
     try {
         if (msg.key.fromMe) return;
