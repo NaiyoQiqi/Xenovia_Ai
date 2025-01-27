@@ -289,66 +289,61 @@ _Media yang di privasi, tidak dapat di unduh._`;
                 handleYtmp4();
                 break;
             default:
-    if (isGroup) return; // tidak dapat digunakan di dalam grup
-    console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
-    conn.sendPresenceUpdate("composing", from);
-    try {
-        conn.gemini[sender] ? conn.gemini[sender] : conn.gemini[sender] = {};
-        conn.gemini[sender].history ? conn.gemini[sender].history : conn.gemini[sender].history = [];
-        const caption = msg.message.imageMessage?.caption ? msg.message.imageMessage.caption : "";
-        
-        if (isQuotedImage) {
-            const ran = getRandom('.jpg');
-            const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`);
-            const img = await imgbb("bc4171d7b9dac4ade00fb5ff989c602c", `./lib/${ran}`);
-            const imgData = img.display_url.split(/\//);
-            const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
-            await new Promise(r => setTimeout(r, 3000));
-            const result = await model.generateContent([
-                {
-                    inlineData: {
-                        data: Buffer.from(imageResp).toString("base64"),
-                        mimeType: "image/jpeg",
-                    },
-                },
-                caption
-            ]);
-            // Tambahkan label AI pada respons
-            const aiResponse = `[AI] ${result.response.text().trim()}`;
-            reply(aiResponse);
-            fs.unlinkSync(media);
-            return reactMessage("");
-        } else {
-            const chat = model.startChat(conn.gemini[sender]);
-            let resdata = await chat.sendMessage(chats);
-            conn.gemini[sender].history.push(
-                {
-                    role: "user",
-                    parts: [{ text: chats }],
-                },
-                {
-                    role: "model",
-                    parts: [
-                        {
-                            text: resdata.response.text().trim(),
-                            ai: true, // Tambahkan flag untuk menandai ini respons dari AI
-                        },
-                    ],
+                if (isGroup) return; // tidak dapat digunakan di dalam grup
+                console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
+                conn.sendPresenceUpdate("composing", from);
+                try {
+                    conn.gemini[sender] ? conn.gemini[sender] : conn.gemini[sender] = {};
+                    conn.gemini[sender].history ? conn.gemini[sender].history : conn.gemini[sender].history = [];
+                    const caption = msg.message.imageMessage?.caption ? msg.message.imageMessage.caption : "";
+                    
+                    if (isQuotedImage) {
+                        const ran = getRandom('.jpg');
+                        const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`);
+                        const img = await imgbb("bc4171d7b9dac4ade00fb5ff989c602c", `./lib/${ran}`);
+                        const imgData = img.display_url.split(/\//);
+                        const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
+                        await new Promise(r => setTimeout(r, 3000));
+                        const result = await model.generateContent([
+                            {
+                                inlineData: {
+                                    data: Buffer.from(imageResp).toString("base64"),
+                                    mimeType: "image/jpeg",
+                                },
+                            },
+                            caption
+                        ]);
+                        // Tambahkan label AI pada respons
+                        const aiResponse = `[AI] ${result.response.text().trim()}`;
+                        reply(aiResponse);
+                        fs.unlinkSync(media);
+                        return reactMessage("");
+                    } else {
+                        const chat = model.startChat(conn.gemini[sender]);
+                        let resdata = await chat.sendMessage(chats);
+                        conn.gemini[sender].history.push(
+                            {
+                                role: "user",
+                                parts: [{ text: chats }],
+                            },
+                            {
+                                role: "model",
+                                parts: [
+                                    {
+                                        text: resdata.response.text().trim(),
+                                        ai: true, // Tambahkan flag untuk menandai ini respons dari AI
+                                    },
+                                ],
+                            }
+                        );
+                        // Tambahkan label AI pada respons
+                        const aiResponse = `[AI] ${resdata.response.text().trim()}`;
+                        reply(aiResponse);
+                        return reactMessage("");
+                    }
+                } catch (e) {
+                    console.log(e);
+                    reply("Server error, coba lain waktu :(");
                 }
-            );
-            // Tambahkan label AI pada respons
-            const aiResponse = `[AI] ${resdata.response.text().trim()}`;
-            reply(aiResponse);
-            return reactMessage("");
-        }
-    } catch (e) {
-        console.log(e);
-        reply("Server error, coba lain waktu :(");
-    }
-    break;
-			    }
-
-  } catch (err) {
-    console.log(color("[ERROR]", "red"), err);
-  }
-};
+                break;
+	}
