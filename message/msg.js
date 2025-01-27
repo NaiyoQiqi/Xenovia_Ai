@@ -97,12 +97,13 @@ module.exports = async (conn, msg, m) => {
         }
         
         const reply = (teks) => {
-            conn.sendMessage(from, { text: `${teks}\n\n*Bot Created By @febbyadityan*` }, { quoted: msg });
+            conn.sendMessage(from, { text: `${teks}\n\n*Bot Created By Xenovia AI*` }, { quoted: msg });
         };
         
         const fakereply = (chat1, target, chat2) => {
-            conn.sendMessage(from, {text: `${chat1}\n\n*Bot Created By @febbyadityan*`}, {quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 }}});
-
+            conn.sendMessage(from, {text: `${chat1}\n\n*Bot Created By Xenovia AI*`}, {quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 }}});
+        }
+        
         const reactMessage = (react) => {
             var reactMsg = {
                 react: {
@@ -156,7 +157,7 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 _Media yang di privasi, tidak dapat di unduh._
 
 (n) tolong gunakan bot dengan bijak.
-*Bot Created By @febbyadityan*`;
+*Bot Created By Xenovia AI*`;
                 reply(textReply);
                 break;
             case '#igdl':
@@ -301,12 +302,3 @@ _Media yang di privasi, tidak dapat di unduh._
         console.log(color("[ERROR]", "red"), err);
     }
 };
-
-/*
-****************************************************
-*                Xenovia AI Footer                *
-*     This script is powered by Xenovia AI        *
-*       For more information, visit our site      *
-*              https://xenovia.ai                 *
-****************************************************
-*/
