@@ -293,44 +293,41 @@ _Media yang di privasi, tidak dapat di unduh._`;
                         const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
                         await new Promise(r => setTimeout(r, 3000));
                         const result = await model.generateContent([
-    {
-        inlineData: {
-            data: Buffer.from(imageResp).toString("base64"),
-            mimeType: "image/jpeg",
-        },
-    },
-    caption
-]);
-reply(result.response.text().trim());
-fs.unlinkSync(media);
-conn.sendMessage(from, { text: result.response.text().trim(), ai: true }, { quoted: msg }); // Menambahkan ai: true
-return reactMessage("");
-
-} else {
-    const chat = model.startChat(conn.gemini[sender]);
-    let resdata = await chat.sendMessage(chats);
-    conn.gemini[sender].history.push({
-        role: "user",
-        parts: [{
-            text: chats
-        }]
-    }, {
-        role: "model",
-        parts: [{
-            text: resdata.response.text().trim()
-        }]
-    });
-    reply(resdata.response.text().trim());
-    conn.sendMessage(from, { text: resdata.response.text().trim(), ai: true }, { quoted: msg }); // Menambahkan ai: true
-    return reactMessage("");
-}
-} catch (e) {
-    console.log(e);
-    reply("Server error, coba lain waktu:(");
-}
-break;
-}
-} catch (err) {
+						{
+							inlineData: {
+								data: Buffer.from(imageResp).toString("base64"),
+								mimeType: "image/jpeg",
+							},
+						},
+						caption
+					]);
+					reply(result.response.text().trim())
+					fs.unlinkSync(media)
+					return reactMessage("❤️")
+				} else {
+					const chat = model.startChat(conn.gemini[sender])
+					let resdata = await chat.sendMessage(chats);
+					conn.gemini[sender].history.push({
+						role: "user",
+						parts: [{
+							text: chats
+						}]
+					}, {
+						role: "model",
+						parts: [{
+							text: resdata.response.text().trim()
+						}]
+					})
+					reply(resdata.response.text().trim());
+					return reactMessage("❤️")
+				}
+			} catch(e) {
+				console.log(e)
+				reply("Server error, coba lain waktu:(")
+			}
+			break
+    }
+  } catch (err) {
     console.log(color("[ERROR]", "red"), err);
-}
+  }
 };
