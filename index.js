@@ -1,13 +1,13 @@
 "use strict";
 const {
-    default: makeWASocket,
-    makeInMemoryStore,
-    DisconnectReason,
-    useMultiFileAuthState,
-    PHONENUMBER_MCC,
-    generateWAMessageFromContent,
-    makeCacheableSignalKeyStore,
-    Mimetype
+	default: makeWASocket,
+	makeInMemoryStore,
+	DisconnectReason,
+	useMultiFileAuthState,
+	PHONENUMBER_MCC,
+	generateWAMessageFromContent,
+	makeCacheableSignalKeyStore,
+	Mimetype
 } = require("@whiskeysockets/baileys")
 const {
   Boom
@@ -40,19 +40,6 @@ const readlineConfig = {
 const readline = require('readline');
 const rl = readline.createInterface(readlineConfig);
 
-const { exec } = require('child_process');
-
-exec('ffmpeg -version', (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.error(`Stderr: ${stderr}`);
-        return;
-    }
-    console.log(`Ffmpeg Version: ${stdout}`);
-});
 
 const startWhatsApp = async () => {
     // Pairing Code
