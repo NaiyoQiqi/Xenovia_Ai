@@ -105,7 +105,7 @@ module.exports = async (conn, msg, m) => {
         
         const fakereply = (chat1, target, chat2) => {
             conn.sendMessage(from, {
-                text: `${chat1}\n\n*Bot Created By Xenovia AI*\nVisit us at: xenovia.com`,
+                text: `${chat1}`,
                 contextInfo: {
                     mentionedJid: [target],
                     forwardingScore: 999999, 
