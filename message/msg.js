@@ -14,11 +14,7 @@ const { ytmp4, ytmp3, ttdl, fbdl } = require("ruhend-scraper");
 const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
-const ffmpeg = require('fluent-ffmpeg');
-const streamBuffers = require('stream-buffers');
 
-// Pastikan PATH ffmpeg diatur dengan benar
-ffmpeg.setFfmpegPath('/usr/local/bin/ffmpeg'); // Sesuaikan dengan path ffmpeg di sistem Anda
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -29,27 +25,6 @@ const model = genAI.getGenerativeModel({
 });
 
 moment.tz.setDefault("Asia/Jakarta").locale("id");
-
-function compressAudio(inputBuffer, callback) {
-    const outputBuffer = new streamBuffers.WritableStreamBuffer({
-        initialSize: (100 * 1024), // Start with 100 kilobytes.
-        incrementAmount: (10 * 1024) // Grow by 10 kilobytes each time buffer overflows.
-    });
-
-    ffmpeg(inputBuffer)
-        .audioBitrate('128k') // Mengatur bitrate audio
-        .format('mp3')
-        .on('end', () => {
-            console.log('File audio berhasil dikompresi');
-            callback(null, outputBuffer.getContents());
-        })
-        .on('error', (err) => {
-            console.log('Terjadi kesalahan saat kompresi:', err);
-            callback(err);
-        })
-        .pipe(outputBuffer);
-}
-
 
 module.exports = async (conn, msg, m) => {
     try {
