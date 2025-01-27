@@ -34,163 +34,163 @@ module.exports = async (conn, msg, m) => {
 
         if (msg.key.fromMe) return;
 
-try {
-    const { type, isQuotedMsg, quotedMsg, mentioned, now, fromMe } = msg;
-    const toJSON = (j) => JSON.stringify(j, null, "\t");
+        try {
+            const { type, isQuotedMsg, quotedMsg, mentioned, now, fromMe } = msg;
+            const toJSON = (j) => JSON.stringify(j, null, "\t");
 
-    // Pastikan msg.message tidak undefined/null
-    if (!msg.message || typeof msg.message !== "object") {
-        console.log("[WARNING] msg.message is undefined or invalid");
-        return;
-    }
-
-    const messageType = Object.keys(msg.message)[0];
-    const from = msg.key.remoteJid;
-    const msgKey = msg.key;
-
-    const chats = 
-        type === "conversation" && msg.message.conversation ? msg.message.conversation :
-        type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
-        type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
-        "";
-        const args = chats.split(" ");
-        const command = chats.toLowerCase().split(" ")[0] || "";
-        const isGroup = msg.key.remoteJid.endsWith("@g.us");
-        const groupMetadata = isGroup ? await conn.groupMetadata(from) : '';
-        const groupName = isGroup ? groupMetadata.subject : '';
-        const sender = isGroup ? msg.key.participant ? msg.key.participant : msg.participant : msg.key.remoteJid;
-        const userId = sender.split("@")[0];
-        const isOwner = ["62xxx@s.whatsapp.net"].includes(sender) ? true : false;
-        const pushname = msg.pushName;
-        const q = chats.slice(command.length + 1, chats.length);
-        const botNumber = conn.user.id.split(":")[0] + "@s.whatsapp.net";
-        const isCmd = chats.startsWith('!');
-        const content = JSON.stringify(msg.message);
-        const isMedia = (messageType === 'imageMessage' || messageType === 'videoMessage');
-        const isQuotedImage = (messageType === 'extendedTextMessage' || messageType === 'imageMessage') && content.includes('imageMessage');
-        const isQuotedVideo = (messageType === 'extendedTextMessage' || messageType === 'videoMessage') && content.includes('videoMessage');
-        
-        const isUrl = (url) => {
-            return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi'));
-        }
-        
-        async function downloadAndSaveMediaMessage (type_file, path_file) {
-            if (type_file === 'image') {
-                var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image');
-                let buffer = Buffer.from([]);
-                for await(const chunk of stream) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                }
-                fs.writeFileSync(path_file, buffer);
-                return path_file;
-            } else if (type_file === 'video') {
-                var stream = await downloadContentFromMessage(msg.message.videoMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.videoMessage, 'video');
-                let buffer = Buffer.from([]);
-                for await(const chunk of stream) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                }
-                fs.writeFileSync(path_file, buffer);
-                return path_file;
-            } else if (type_file === 'sticker') {
-                var stream = await downloadContentFromMessage(msg.message.stickerMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.stickerMessage, 'sticker');
-                let buffer = Buffer.from([]);
-                for await(const chunk of stream) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                }
-                fs.writeFileSync(path_file, buffer);
-                return path_file;
-            } else if (type_file === 'audio') {
-                var stream = await downloadContentFromMessage(msg.message.audioMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.audioMessage, 'audio');
-                let buffer = Buffer.from([]);
-                for await(const chunk of stream) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                }
-                fs.writeFileSync(path_file, buffer);
-                return path_file;
+            // Pastikan msg.message tidak undefined/null
+            if (!msg.message || typeof msg.message !== "object") {
+                console.log("[WARNING] msg.message is undefined or invalid");
+                return;
             }
-        }
-        
-        const reply = (teks) => {
-            conn.sendMessage(from, { text: `${teks}` }, { quoted: msg });
-        };
 
-        const fakereply = (chat1, target) => {
-            conn.sendMessage(from, {
-                text: `${chat1}`,
-                contextInfo: {
-                    mentionedJid: [target], 
-                    forwardingScore: 999999, 
-                    isForwarded: true,
-                    externalAdReply: {
-                        showAdAttribution: true, 
-                        title: "Xenovia AI", 
-                        body: "Visit Website", 
-                        sourceUrl: "https://midea.com", 
-                        mediaType: 2,
-                        renderLargerThumbnail: true, 
-                        thumbnailUrl: "https://images.app.goo.gl/fKL1ptbp6ZuPeYeY8" 
+            const messageType = Object.keys(msg.message)[0];
+            const from = msg.key.remoteJid;
+            const msgKey = msg.key;
+
+            const chats = 
+                type === "conversation" && msg.message.conversation ? msg.message.conversation :
+                type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
+                type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
+                "";
+            const args = chats.split(" ");
+            const command = chats.toLowerCase().split(" ")[0] || "";
+            const isGroup = msg.key.remoteJid.endsWith("@g.us");
+            const groupMetadata = isGroup ? await conn.groupMetadata(from) : '';
+            const groupName = isGroup ? groupMetadata.subject : '';
+            const sender = isGroup ? msg.key.participant ? msg.key.participant : msg.participant : msg.key.remoteJid;
+            const userId = sender.split("@")[0];
+            const isOwner = ["62xxx@s.whatsapp.net"].includes(sender) ? true : false;
+            const pushname = msg.pushName;
+            const q = chats.slice(command.length + 1, chats.length);
+            const botNumber = conn.user.id.split(":")[0] + "@s.whatsapp.net";
+            const isCmd = chats.startsWith('!');
+            const content = JSON.stringify(msg.message);
+            const isMedia = (messageType === 'imageMessage' || messageType === 'videoMessage');
+            const isQuotedImage = (messageType === 'extendedTextMessage' || messageType === 'imageMessage') && content.includes('imageMessage');
+            const isQuotedVideo = (messageType === 'extendedTextMessage' || messageType === 'videoMessage') && content.includes('videoMessage');
+            
+            const isUrl = (url) => {
+                return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi'));
+            }
+            
+            async function downloadAndSaveMediaMessage (type_file, path_file) {
+                if (type_file === 'image') {
+                    var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image');
+                    let buffer = Buffer.from([]);
+                    for await(const chunk of stream) {
+                        buffer = Buffer.concat([buffer, chunk]);
                     }
+                    fs.writeFileSync(path_file, buffer);
+                    return path_file;
+                } else if (type_file === 'video') {
+                    var stream = await downloadContentFromMessage(msg.message.videoMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.videoMessage, 'video');
+                    let buffer = Buffer.from([]);
+                    for await(const chunk of stream) {
+                        buffer = Buffer.concat([buffer, chunk]);
+                    }
+                    fs.writeFileSync(path_file, buffer);
+                    return path_file;
+                } else if (type_file === 'sticker') {
+                    var stream = await downloadContentFromMessage(msg.message.stickerMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.stickerMessage, 'sticker');
+                    let buffer = Buffer.from([]);
+                    for await(const chunk of stream) {
+                        buffer = Buffer.concat([buffer, chunk]);
+                    }
+                    fs.writeFileSync(path_file, buffer);
+                    return path_file;
+                } else if (type_file === 'audio') {
+                    var stream = await downloadContentFromMessage(msg.message.audioMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.audioMessage, 'audio');
+                    let buffer = Buffer.from([]);
+                    for await(const chunk of stream) {
+                        buffer = Buffer.concat([buffer, chunk]);
+                    }
+                    fs.writeFileSync(path_file, buffer);
+                    return path_file;
                 }
-            }, { quoted: msg });
-        };
-        
-        const reactMessage = (react) => {
-            var reactMsg = {
-                react: {
-                    text: react,
-                    key: msg.key
-                }
+            }
+            
+            const reply = (teks) => {
+                conn.sendMessage(from, { text: `${teks}` }, { quoted: msg });
             };
-            conn.sendMessage(from, reactMsg);
-        };
-        
-        const getRandom = (ext) => {
-            return `${Math.floor(Math.random() * 10000)}${ext}`;
-        };
-        
-        // conn.readMessages([msg.key]); // Autoread dinonaktifkan
-        conn.sendPresenceUpdate("available", from);
-        
-        if (!isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname, "lightblue"), "in", color(groupName, "lightgreen"));
-        }
-        if (isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname, "lightblue"), "in", color(groupName, "lightgreen"));
-        }
 
-        async function handleYtmp3() {
-            if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
-            try {
-                var url = await yts(q);
-                reactMessage("");
-                let data = await ytmp3(url.all[0].url);
-                var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-                conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
-                conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
-            } catch (e) {
-                reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+            const fakereply = (chat1, target) => {
+                conn.sendMessage(from, {
+                    text: `${chat1}`,
+                    contextInfo: {
+                        mentionedJid: [target], 
+                        forwardingScore: 999999, 
+                        isForwarded: true,
+                        externalAdReply: {
+                            showAdAttribution: true, 
+                            title: "Xenovia AI", 
+                            body: "Visit Website", 
+                            sourceUrl: "https://midea.com", 
+                            mediaType: 2,
+                            renderLargerThumbnail: true, 
+                            thumbnailUrl: "https://images.app.goo.gl/fKL1ptbp6ZuPeYeY8" 
+                        }
+                    }
+                }, { quoted: msg });
+            };
+            
+            const reactMessage = (react) => {
+                var reactMsg = {
+                    react: {
+                        text: react,
+                        key: msg.key
+                    }
+                };
+                conn.sendMessage(from, reactMsg);
+            };
+            
+            const getRandom = (ext) => {
+                return `${Math.floor(Math.random() * 10000)}${ext}`;
+            };
+            
+            // conn.readMessages([msg.key]); // Autoread dinonaktifkan
+            conn.sendPresenceUpdate("available", from);
+            
+            if (!isGroup && isCmd && !fromMe) {
+                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname,[...]
             }
-        }
-
-        async function handleYtmp4() {
-            if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
-            try {
-                var url = await yts(q);
-                reactMessage("");
-                let data = await ytmp4(url.all[0].url);
-                reply('Tunggu sebentar, sedang mendownload...');
-                var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
-                conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
-            } catch (e) {
-                reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+            if (isGroup && isCmd && !fromMe) {
+                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname,[...]
             }
-        }
 
-        switch (command) {
-            case 'start':
-            case 'menu':
-            case 'help':
-                var textReply = `Hai ${pushname} 👋🏻
+            async function handleYtmp3() {
+                if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
+                try {
+                    var url = await yts(q);
+                    reactMessage("");
+                    let data = await ytmp3(url.all[0].url);
+                    var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
+                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
+                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
+                } catch (e) {
+                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                }
+            }
+
+            async function handleYtmp4() {
+                if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
+                try {
+                    var url = await yts(q);
+                    reactMessage("");
+                    let data = await ytmp4(url.all[0].url);
+                    reply('Tunggu sebentar, sedang mendownload...');
+                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
+                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
+                } catch (e) {
+                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                }
+            }
+
+            switch (command) {
+                case 'start':
+                case 'menu':
+                case 'help':
+                    var textReply = `Hai ${pushname} 👋🏻
 Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini, dan juga di support oleh kecerdasan buatan (AI).
 
 ✨ *GEMINI AI* adalah platform kecerdasan buatan (AI) dari Google yang dapat membantu berbagai tugas dan data pengguna.
@@ -213,137 +213,144 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 • *Contoh* : !xdl https://x.com/link
 
 _Media yang di privasi, tidak dapat di unduh._`;
-                fakereply(textReply, from);
-                break;
-            case 'ping':
-                reply('Pong! Bot is active.');
-                break;
-            case 'runtime':
-                const uptime = process.uptime();
-                const hours = Math.floor(uptime / 3600);
-                const minutes = Math.floor((uptime % 3600) / 60);
-                const seconds = Math.floor(uptime % 60);
-                reply(`Bot has been running for ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`);
-                break;
-            case 'igdl':
-                if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
-                insta(q).then(dataIG => {
-                    reactMessage("");
-                    if (dataIG.image) {
-                        for (let i of dataIG.image) {
-                            conn.sendMessage(from, {image: {url: i}}, {quoted: msg});
-                        }
-                    }
-                    if (dataIG.video) {
-                        for (let v of dataIG.video) {
-                            new Promise(resolve => setTimeout(resolve, 2000));
-                            conn.sendMessage(from, {video: {url: v.video}}, {quoted: msg});
-                        }
-                    }
-                }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
-                break;
-            case 'twtdl':
-            case 'xdl':
-                if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`);
-                gifted.giftedtwitter(q).then(data => {
-                    reactMessage("");
-                    reply('Tunggu sebentar, sedang mengunduh...');
-                    var capt = `\`\`\`Enjoy\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg });
-                    console.log(data.results[1].url);
-                }).catch(e => {
-                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-                });
-                break;
-            case 'fbdl':
-                if (args.length < 2) return reply(`Input link untuk mendownload media dari Facebook.`);
-                fbdl(q).then(data => {
-                    var dataFB = `\`\`\`Media Ditemukan\`\`\`\n*Resolusi:* ${data.data[0].resolution}`;
-                    conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB }, { quoted: msg });
-                    reactMessage("");
-                }).catch(e => {
-                    console.log(e);
-                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-                });
-                break;
-            case 'ttdl':
-            case 'tiktok':
-            case 'tiktokdl':
-                if (args.length < 2) return reply(`Input link untuk mendownload video dari TikTok.`);
-                reactMessage("");
-                ttdl(q).then(data => {
-                    var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg });
-                    reply(`Jika kamu ingin mendownload background musik nya:\n${data.music}\n\n\`\`\`Sedang mengirim video...\`\`\``);
-                }).catch(e => {
-                    console.log(e);
-                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-                });
-                break;
-            case 'ytmp3':
-            case 'mp3':
-                handleYtmp3();
-                break;
-            case 'ytmp4':
-            case 'mp4':
-                handleYtmp4();
-                break;
-            default:
-                if (isGroup) return; // tidak dapat digunakan di dalam grup
-                console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
-                conn.sendPresenceUpdate("composing", from);
-                try {
-                    conn.gemini[sender] ? conn.gemini[sender] : conn.gemini[sender] = {};
-                    conn.gemini[sender].history ? conn.gemini[sender].history : conn.gemini[sender].history = [];
-                    const caption = msg.message.imageMessage?.caption ? msg.message.imageMessage.caption : "";
-                    
-                    if (isQuotedImage) {
-                        const ran = getRandom('.jpg');
-                        const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`);
-                        const img = await imgbb("bc4171d7b9dac4ade00fb5ff989c602c", `./lib/${ran}`);
-                        const imgData = img.display_url.split(/\//);
-                        const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
-                        await new Promise(r => setTimeout(r, 3000));
-                        const result = await model.generateContent([
-                            {
-                                inlineData: {
-                                    data: Buffer.from(imageResp).toString("base64"),
-                                    mimeType: "image/jpeg",
-                                },
-                            },
-                            caption
-                        ]);
-                        // Tambahkan label AI pada respons
-                        const aiResponse = `[AI] ${result.response.text().trim()}`;
-                        reply(aiResponse);
-                        fs.unlinkSync(media);
-                        return reactMessage("");
-                    } else {
-                        const chat = model.startChat(conn.gemini[sender]);
-                        let resdata = await chat.sendMessage(chats);
-                        conn.gemini[sender].history.push(
-                            {
-                                role: "user",
-                                parts: [{ text: chats }],
-                            },
-                            {
-                                role: "model",
-                                parts: [
-                                    {
-                                        text: resdata.response.text().trim(),
-                                        ai: true, // Tambahkan flag untuk menandai ini respons dari AI
-                                    },
-                                ],
+                    fakereply(textReply, from);
+                    break;
+                case 'ping':
+                    reply('Pong! Bot is active.');
+                    break;
+                case 'runtime':
+                    const uptime = process.uptime();
+                    const hours = Math.floor(uptime / 3600);
+                    const minutes = Math.floor((uptime % 3600) / 60);
+                    const seconds = Math.floor(uptime % 60);
+                    reply(`Bot has been running for ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`);
+                    break;
+                case 'igdl':
+                    if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
+                    insta(q).then(dataIG => {
+                        reactMessage("");
+                        if (dataIG.image) {
+                            for (let i of dataIG.image) {
+                                conn.sendMessage(from, {image: {url: i}}, {quoted: msg});
                             }
-                        );
-                        // Tambahkan label AI pada respons
-                        const aiResponse = `[AI] ${resdata.response.text().trim()}`;
-                        reply(aiResponse);
-                        return reactMessage("");
+                        }
+                        if (dataIG.video) {
+                            for (let v of dataIG.video) {
+                                new Promise(resolve => setTimeout(resolve, 2000));
+                                conn.sendMessage(from, {video: {url: v.video}}, {quoted: msg});
+                            }
+                        }
+                    }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
+                    break;
+                case 'twtdl':
+                case 'xdl':
+                    if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`);
+                    gifted.giftedtwitter(q).then(data => {
+                        reactMessage("");
+                        reply('Tunggu sebentar, sedang mengunduh...');
+                        var capt = `\`\`\`Enjoy\`\`\``;
+                        conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg });
+                        console.log(data.results[1].url);
+                    }).catch(e => {
+                        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                    });
+                    break;
+                case 'fbdl':
+                    if (args.length < 2) return reply(`Input link untuk mendownload media dari Facebook.`);
+                    fbdl(q).then(data => {
+                        var dataFB = `\`\`\`Media Ditemukan\`\`\`\n*Resolusi:* ${data.data[0].resolution}`;
+                        conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB }, { quoted: msg });
+                        reactMessage("");
+                    }).catch(e => {
+                        console.log(e);
+                        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                    });
+                    break;
+                case 'ttdl':
+                case 'tiktok':
+                case 'tiktokdl':
+                    if (args.length < 2) return reply(`Input link untuk mendownload video dari TikTok.`);
+                    reactMessage("");
+                    ttdl(q).then(data => {
+                        var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``;
+                        conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg });
+                        reply(`Jika kamu ingin mendownload background musik nya:\n${data.music}\n\n\`\`\`Sedang mengirim video...\`\`\``);
+                    }).catch(e => {
+                        console.log(e);
+                        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                    });
+                    break;
+                case 'ytmp3':
+                case 'mp3':
+                    handleYtmp3();
+                    break;
+                case 'ytmp4':
+                case 'mp4':
+                    handleYtmp4();
+                    break;
+                default:
+                    if (isGroup) return; // tidak dapat digunakan di dalam grup
+                    console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
+                    conn.sendPresenceUpdate("composing", from);
+                    try {
+                        conn.gemini[sender] ? conn.gemini[sender] : conn.gemini[sender] = {};
+                        conn.gemini[sender].history ? conn.gemini[sender].history : conn.gemini[sender].history = [];
+                        const caption = msg.message.imageMessage?.caption ? msg.message.imageMessage.caption : "";
+                        
+                        if (isQuotedImage) {
+                            const ran = getRandom('.jpg');
+                            const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`);
+                            const img = await imgbb("bc4171d7b9dac4ade00fb5ff989c602c", `./lib/${ran}`);
+                            const imgData = img.display_url.split(/\//);
+                            const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
+                            await new Promise(r => setTimeout(r, 3000));
+                            const result = await model.generateContent([
+                                {
+                                    inlineData: {
+                                        data: Buffer.from(imageResp).toString("base64"),
+                                        mimeType: "image/jpeg",
+                                    },
+                                },
+                                caption
+                            ]);
+                            // Tambahkan label AI pada respons
+                            const aiResponse = `[AI] ${result.response.text().trim()}`;
+                            reply(aiResponse);
+                            fs.unlinkSync(media);
+                            return reactMessage("");
+                        } else {
+                            const chat = model.startChat(conn.gemini[sender]);
+                            let resdata = await chat.sendMessage(chats);
+                            conn.gemini[sender].history.push(
+                                {
+                                    role: "user",
+                                    parts: [{ text: chats }],
+                                },
+                                {
+                                    role: "model",
+                                    parts: [
+                                        {
+                                            text: resdata.response.text().trim(),
+                                            ai: true, // Tambahkan flag untuk menandai ini respons dari AI
+                                        },
+                                    ],
+                                }
+                            );
+                            // Tambahkan label AI pada respons
+                            const aiResponse = `[AI] ${resdata.response.text().trim()}`;
+                            reply(aiResponse);
+                            return reactMessage("");
+                        }
+                    } catch (e) {
+                        console.log(e);
+                        reply("Server error, coba lain waktu :(");
                     }
-                } catch (e) {
-                    console.log(e);
-                    reply("Server error, coba lain waktu :(");
-                }
-                break;
-	}
+                    break;
+            }
+        } catch (err) {
+            console.log(color("[ERROR]", "red"), err);
+        }
+    } catch (err) {
+        console.log(color("[ERROR]", "red"), err);
+    }
+};
