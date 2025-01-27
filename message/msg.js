@@ -38,7 +38,10 @@ module.exports = async (conn, msg, m) => {
         const messageType = Object.keys(msg.message)[0];
         const from = msg.key.remoteJid;
         const msgKey = msg.key;
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : [...]
+        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation :
+                      type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
+                      type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
+                      "";
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
