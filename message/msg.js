@@ -152,10 +152,20 @@ module.exports = async (conn, msg, m) => {
             conn.sendPresenceUpdate("available", from);
             
             if (!isGroup && isCmd && !fromMe) {
-                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname,[...]
+                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", 
+                    color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), 
+                    color(`${command} [${args.length}]`), 
+                    "from", 
+                    color(pushname, "lightblue")
+                );
             }
             if (isGroup && isCmd && !fromMe) {
-                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname,[...]
+                console.log("->[\x1b[1;32mCMD\x1b[1;37m]", 
+                    color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), 
+                    color(`${command} [${args.length}]`), 
+                    "from", 
+                    color(pushname, "lightblue")
+                );
             }
 
             async function handleYtmp3() {
