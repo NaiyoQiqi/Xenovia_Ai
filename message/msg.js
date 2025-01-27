@@ -100,31 +100,28 @@ module.exports = async (conn, msg, m) => {
         }
         
         const reply = (teks) => {
-            conn.sendMessage(from, { text: `${fakereply}` }, { quoted: msg });
-        };
-        
-        const fakereply = (chat1, target, chat2) => {
-            conn.sendMessage(from, {
-                text: `${chat1}`,
-                contextInfo: {
-                    mentionedJid: [target],
-                    forwardingScore: 999999, 
-                    isForwarded: true, 
-                    forwardedNewsletterMessageInfo: {
-                        newsletterName: "Newsletter",
-                        newsletterJid: "newsletterJid",
-                    },
-                    externalAdReply: {
-                        showAdAttribution: true,
-                        title: "Bot",
-                        body: "Owner",
-                        sourceUrl: "https://xenovia.com", // URL
-                        mediaType: 1,
-                        renderLargerThumbnail: true
-                    }
-                }
-            }, { quoted: msg });
+    conn.sendMessage(from, { 
+        text: `${teks}` 
+    }, { quoted: msg });
+};
+
+const fakereply = (chat1, target) => {
+    conn.sendMessage(from, {
+        text: `${chat1}`,
+        contextInfo: {
+            mentionedJid: [target], // Mention target jika diperlukan
+            forwardingScore: 999999, 
+            isForwarded: true,
+            externalAdReply: {
+                showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
+                title: "Fany Aprilia", // Judul yang akan muncul
+                body: "Owner - Visit Website", // Subjudul atau deskripsi
+                sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
+                mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
+                          }
         }
+    }, { quoted: msg }); // Pesan yang di-quote
+};
         
         const reactMessage = (react) => {
             var reactMsg = {
@@ -181,8 +178,8 @@ _Media yang di privasi, tidak dapat di unduh._
 (n) tolong gunakan bot dengan bijak.
 *Bot Created By Xenovia AI*
 Visit us at: xenovia.com`;
-                reply(textReply);
-                break;
+          fakereply(textReply, from, "*Bot Created By Xenovia AI*");
+    break;
             case '#igdl':
                 if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
                 insta(q).then(dataIG => {
