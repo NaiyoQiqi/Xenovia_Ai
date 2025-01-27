@@ -324,7 +324,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                 caption
                             ]);
                             // Tambahkan label AI pada respons
-                            const aiResponse = `XenoviaAI ${result.response.text().trim()}`;
+                            const aiResponse = `[XenoviaAI] ${result.response.text().trim()}`;
                             reply(aiResponse);
                             fs.unlinkSync(media);
                             return reactMessage("");
@@ -347,7 +347,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                 }
                             );
                             // Tambahkan label AI pada respons
-                            const aiResponse = `XenoviaAI ${resdata.response.text().trim()}`;
+                            const aiResponse = `[XenoviaAI] ${resdata.response.text().trim()}`;
                             reply(aiResponse);
                             return reactMessage("");
                         }
