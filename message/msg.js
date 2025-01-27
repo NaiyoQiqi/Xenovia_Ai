@@ -17,7 +17,7 @@ const imgbb = require("imgbb-uploader");
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("INPUT_YOUR_APIKEY");
+const genAI = new GoogleGenerativeAI("AIzaSyD76DoclX_3DHscKMxDtaP876Thr4fFOCA");
 const model = genAI.getGenerativeModel({
    model: "gemini-1.5-flash",
    systemInstruction: "Kamu adalah seorang Asisten. Bernama Keishu"
