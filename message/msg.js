@@ -20,7 +20,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI("AIzaSyD76DoclX_3DHscKMxDtaP876Thr4fFOCA");
 const model = genAI.getGenerativeModel({
    model: "gemini-1.5-flash",
-   systemInstruction: "Kamu adalah seorang Asisten. Bernama Keishu"
+   systemInstruction: "Kamu adalah seorang Asisten. Bernama Xenovia"
 });
 
 moment.tz.setDefault("Asia/Jakarta").locale("id");
@@ -201,11 +201,7 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 • *Perintah* : !xdl / !twtdl _link twitter_
 • *Contoh* : !xdl https://x.com/link
 
-_Media yang di privasi, tidak dapat di unduh._
-
-(n) tolong gunakan bot dengan bijak.
-*Bot Created By Xenovia AI*
-Visit us at: xenovia.com`;
+_Media yang di privasi, tidak dapat di unduh._`;
                 fakereply(textReply, from);
                 break;
             case 'ping':
