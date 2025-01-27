@@ -115,11 +115,12 @@ module.exports = async (conn, msg, m) => {
                 title: "Fany Aprilia", // Judul yang akan muncul
                 body: "Owner - Visit Website", // Subjudul atau deskripsi
                 sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
-                mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
-            }
+                mediaType: 2,
+                renderLargerThumbnail: true, // Thumbnail besar
+            thumbnailUrl: "https://images.app.goo.gl/BWqYfEuxzuv71e5n9" // Ganti dengan URL gambar valid
         }
-    });
-};
+    }
+});
         
         const reactMessage = (react) => {
             var reactMsg = {
