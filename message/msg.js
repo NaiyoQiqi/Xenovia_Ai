@@ -317,7 +317,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
             const aiResponse = `[AI] ${result.response.text().trim()}`;
             reply(aiResponse);
             fs.unlinkSync(media);
-            return reactMessage("❤️");
+            return reactMessage("");
         } else {
             const chat = model.startChat(conn.gemini[sender]);
             let resdata = await chat.sendMessage(chats);
@@ -339,7 +339,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
             // Tambahkan label AI pada respons
             const aiResponse = `[AI] ${resdata.response.text().trim()}`;
             reply(aiResponse);
-            return reactMessage("❤️");
+            return reactMessage("");
         }
     } catch (e) {
         console.log(e);
