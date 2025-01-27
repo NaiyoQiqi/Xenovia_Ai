@@ -74,7 +74,7 @@ module.exports = async (conn, msg, m) => {
                 return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi'));
             }
             
-            async function downloadAndSaveMediaMessage (type_file, path_file) {
+            async function downloadAndSaveMediaMessage(type_file, path_file) {
                 if (type_file === 'image') {
                     var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image');
                     let buffer = Buffer.from([]);
@@ -324,7 +324,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                 caption
                             ]);
                             // Tambahkan label AI pada respons
-                            const aiResponse = `[AI] ${result.response.text().trim()}`;
+                            const aiResponse = `XenoviaAI ${result.response.text().trim()}`;
                             reply(aiResponse);
                             fs.unlinkSync(media);
                             return reactMessage("");
@@ -341,13 +341,13 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                     parts: [
                                         {
                                             text: resdata.response.text().trim(),
-                                            ai: true, // Tambahkan flag untuk menandai ini respons dari AI
+                                            // Remove the ai flag
                                         },
                                     ],
                                 }
                             );
                             // Tambahkan label AI pada respons
-                            const aiResponse = `[AI] ${resdata.response.text().trim()}`;
+                            const aiResponse = `XenoviaAI ${resdata.response.text().trim()}`;
                             reply(aiResponse);
                             return reactMessage("");
                         }
