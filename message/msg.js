@@ -112,12 +112,12 @@ module.exports = async (conn, msg, m) => {
                     isForwarded: true,
                     externalAdReply: {
                         showAdAttribution: true, 
-                        title: "Fany Aprilia", 
-                        body: "Owner - Visit Website", 
-                        sourceUrl: "https://xenovia.com", 
+                        title: "Xenovia AI", 
+                        body: "Visit Website", 
+                        sourceUrl: "https://midea.com", 
                         mediaType: 2,
                         renderLargerThumbnail: true, 
-                        thumbnailUrl: "https://telegra.ph/file/6d25de614f92de742a88f.jpg" 
+                        thumbnailUrl: "https://images.app.goo.gl/fKL1ptbp6ZuPeYeY8" 
                     }
                 }
             }, { quoted: msg });
