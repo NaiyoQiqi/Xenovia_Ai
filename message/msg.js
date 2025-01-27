@@ -100,7 +100,7 @@ module.exports = async (conn, msg, m) => {
         }
         
         const reply = (teks) => {
-            conn.sendMessage(from, { text: `${teks}\n\n*Bot Created By Xenovia AI*\nVisit us at: xenovia.com` }, { quoted: msg });
+            conn.sendMessage(from, { text: `${fakereply}` }, { quoted: msg });
         };
         
         const fakereply = (chat1, target, chat2) => {
