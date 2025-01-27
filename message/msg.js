@@ -38,7 +38,7 @@ module.exports = async (conn, msg, m) => {
         const messageType = Object.keys(msg.message)[0];
         const from = msg.key.remoteJid;
         const msgKey = msg.key;
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : type === "extendedTextMessage" && msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage && msg.message.extendedTextMessage.contextInfo?.quotedMessage.videoMessage ? msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage : "";
+        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : [...]
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
@@ -97,11 +97,30 @@ module.exports = async (conn, msg, m) => {
         }
         
         const reply = (teks) => {
-            conn.sendMessage(from, { text: `${teks}\n\n*Bot Created By Xenovia AI*` }, { quoted: msg });
+            conn.sendMessage(from, { text: `${teks}\n\n*Bot Created By Xenovia AI*\nVisit us at: xenovia.com` }, { quoted: msg });
         };
         
         const fakereply = (chat1, target, chat2) => {
-            conn.sendMessage(from, {text: `${chat1}\n\n*Bot Created By Xenovia AI*`}, {quoted: { key: { fromMe: false, participant: `${target}@s.whatsapp.net`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: chat2 }}});
+            conn.sendMessage(from, {
+                text: `${chat1}\n\n*Bot Created By Xenovia AI*\nVisit us at: xenovia.com`,
+                contextInfo: {
+                    mentionedJid: [target],
+                    forwardingScore: 999999, 
+                    isForwarded: true, 
+                    forwardedNewsletterMessageInfo: {
+                        newsletterName: "Newsletter",
+                        newsletterJid: "newsletterJid",
+                    },
+                    externalAdReply: {
+                        showAdAttribution: true,
+                        title: "Bot",
+                        body: "Owner",
+                        sourceUrl: "https://xenovia.com", // URL
+                        mediaType: 1,
+                        renderLargerThumbnail: true
+                    }
+                }
+            }, { quoted: msg });
         }
         
         const reactMessage = (react) => {
@@ -122,10 +141,10 @@ module.exports = async (conn, msg, m) => {
         conn.sendPresenceUpdate("available", from);
         
         if (!isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...]
         }
         if (isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", color(groupName));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname)[...]
         }
         
         switch (command) {
@@ -157,7 +176,8 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 _Media yang di privasi, tidak dapat di unduh._
 
 (n) tolong gunakan bot dengan bijak.
-*Bot Created By Xenovia AI*`;
+*Bot Created By Xenovia AI*
+Visit us at: xenovia.com`;
                 reply(textReply);
                 break;
             case '#igdl':
