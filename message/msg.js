@@ -292,7 +292,7 @@ Visit us at: xenovia.com`;
                     if (isQuotedImage) {
                         const ran = getRandom('.jpg');
                         const media = await downloadAndSaveMediaMessage("image", `./lib/${ran}`);
-                        const img = await imgbb("INPUT_YOUR_APIKEY", `./lib/${ran}`);
+                        const img = await imgbb("bc4171d7b9dac4ade00fb5ff989c602c", `./lib/${ran}`);
                         const imgData = img.display_url.split(/\//);
                         const imageResp = await fetch(`https://i.ibb.co.com/${imgData[3]}/${imgData[4]}`).then((response) => response.arrayBuffer());
                         await new Promise(r => setTimeout(r, 3000));
