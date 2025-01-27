@@ -235,38 +235,33 @@ Visit us at: xenovia.com`;
                 });
                 break;
             case '#ytmp3':
-			case '#mp3':
-				if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
-				var url = await yts(q)
-				reactMessage("❤️")
-				ytmp3(url.all[0].url).then(data => {
-					var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
-					conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
-					conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg })
-				}).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
-				break
-            case '#ytmp4':
-            case '#mp4':
-                if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
-                var url = await yts(q);
-                reactMessage("❤️");
-                ytmp4(url.all[0].url).then(data => {
-                    reply('Tunggu sebentar, sedang mendownload...');
-                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
-                }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
-                break;
-            case '>>':
-                if (!isOwner) return reply(`Maaf, ini hanya dapat digunakan oleh Owner Bot.`);
-                try {
-                    let evaled = await eval(q);
-                    if (typeof evaled !== "string")
-                        evaled = require("util").inspect(evaled);
-                    reply(`${evaled}`);
-                } catch (e) {
-                    reply(`${e}`);
-                }
-                break;
+case '#mp3':
+    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
+    try {
+        var url = await yts(q);
+        reactMessage("❤️");
+        let data = await ytmp3(url.all[0].url);
+        var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
+        conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
+        conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
+    } catch (e) {
+        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+    }
+    break;
+case '#ytmp4':
+case '#mp4':
+    if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
+    try {
+        var url = await yts(q);
+        reactMessage("❤️");
+        let data = await ytmp4(url.all[0].url);
+        reply('Tunggu sebentar, sedang mendownload...');
+        var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
+        conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
+    } catch (e) {
+        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+    }
+    break;
             default:
                 if (isGroup) return; // tidak dapat digunakan didalam grup
                 console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
