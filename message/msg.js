@@ -33,15 +33,26 @@ module.exports = async (conn, msg, m) => {
         await delay(5000);
 
         if (msg.key.fromMe) return;
-        const { type, isQuotedMsg, quotedMsg, mentioned, now, fromMe } = msg;
-        const toJSON = (j) => JSON.stringify(j, null, "\t");
-        const messageType = Object.keys(msg.message)[0];
-        const from = msg.key.remoteJid;
-        const msgKey = msg.key;
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation :
-                      type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
-                      type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
-                      "";
+
+try {
+    const { type, isQuotedMsg, quotedMsg, mentioned, now, fromMe } = msg;
+    const toJSON = (j) => JSON.stringify(j, null, "\t");
+
+    // Pastikan msg.message tidak undefined/null
+    if (!msg.message || typeof msg.message !== "object") {
+        console.log("[WARNING] msg.message is undefined or invalid");
+        return;
+    }
+
+    const messageType = Object.keys(msg.message)[0];
+    const from = msg.key.remoteJid;
+    const msgKey = msg.key;
+
+    const chats = 
+        type === "conversation" && msg.message.conversation ? msg.message.conversation :
+        type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
+        type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption :
+        "";
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
