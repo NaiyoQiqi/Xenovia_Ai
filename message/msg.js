@@ -104,22 +104,22 @@ module.exports = async (conn, msg, m) => {
         };
 
         const fakereply = (chat1, target) => {
-            conn.sendMessage(from, {
-                text: `${chat1}`,
-                contextInfo: {
-                    mentionedJid: [target], // Mention target jika diperlukan
-                    forwardingScore: 999999, 
-                    isForwarded: true,
-                    externalAdReply: {
-                        showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
-                        title: "Fany Aprilia", // Judul yang akan muncul
-                        body: "Owner - Visit Website", // Subjudul atau deskripsi
-                        sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
-                        mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
-                    }
-                }
-            }, { quoted: msg });
-        };
+    conn.sendMessage(from, {
+        text: `${chat1}`,
+        contextInfo: {
+            mentionedJid: [target], // Mention target jika diperlukan
+            forwardingScore: 999999, 
+            isForwarded: true,
+            externalAdReply: {
+                showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
+                title: "Fany Aprilia", // Judul yang akan muncul
+                body: "Owner - Visit Website", // Subjudul atau deskripsi
+                sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
+                mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
+            }
+        }
+    });
+};
         
         const reactMessage = (react) => {
             var reactMsg = {
