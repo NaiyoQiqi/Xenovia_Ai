@@ -100,27 +100,26 @@ module.exports = async (conn, msg, m) => {
         }
         
         const reply = (teks) => {
-    conn.sendMessage(from, { 
-        text: `${teks}` 
-    }, { quoted: msg });
-};
+            conn.sendMessage(from, { text: `${teks}` }, { quoted: msg });
+        };
 
-const fakereply = (chat1, target) => {
-    conn.sendMessage(from, {
-        text: `${chat1}`,
-        contextInfo: {
-            mentionedJid: [target], // Mention target jika diperlukan
-            forwardingScore: 999999, 
-            isForwarded: true,
-            externalAdReply: {
-                showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
-                title: "Fany Aprilia", // Judul yang akan muncul
-                body: "Owner - Visit Website", // Subjudul atau deskripsi
-                sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
-                mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
-}
-    }
-});
+        const fakereply = (chat1, target) => {
+            conn.sendMessage(from, {
+                text: `${chat1}`,
+                contextInfo: {
+                    mentionedJid: [target], // Mention target jika diperlukan
+                    forwardingScore: 999999, 
+                    isForwarded: true,
+                    externalAdReply: {
+                        showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
+                        title: "Fany Aprilia", // Judul yang akan muncul
+                        body: "Owner - Visit Website", // Subjudul atau deskripsi
+                        sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
+                        mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
+                    }
+                }
+            }, { quoted: msg });
+        };
         
         const reactMessage = (react) => {
             var reactMsg = {
@@ -128,13 +127,13 @@ const fakereply = (chat1, target) => {
                     text: react,
                     key: msg.key
                 }
-            }
+            };
             conn.sendMessage(from, reactMsg);
-        }
+        };
         
         const getRandom = (ext) => {
             return `${Math.floor(Math.random() * 10000)}${ext}`;
-        }
+        };
         
         // conn.readMessages([msg.key]); // Autoread dinonaktifkan
         conn.sendPresenceUpdate("available", from);
@@ -177,8 +176,8 @@ _Media yang di privasi, tidak dapat di unduh._
 (n) tolong gunakan bot dengan bijak.
 *Bot Created By Xenovia AI*
 Visit us at: xenovia.com`;
-          fakereply(textReply, from, "Xenovia AI");
-    break;
+                fakereply(textReply, from);
+                break;
             case '#igdl':
                 if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
                 insta(q).then(dataIG => {
@@ -235,33 +234,33 @@ Visit us at: xenovia.com`;
                 });
                 break;
             case '#ytmp3':
-case '#mp3':
-    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
-    try {
-        var url = await yts(q);
-        reactMessage("❤️");
-        let data = await ytmp3(url.all[0].url);
-        var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-        conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
-        conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
-    } catch (e) {
-        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-    }
-    break;
-case '#ytmp4':
-case '#mp4':
-    if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
-    try {
-        var url = await yts(q);
-        reactMessage("❤️");
-        let data = await ytmp4(url.all[0].url);
-        reply('Tunggu sebentar, sedang mendownload...');
-        var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
-        conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
-    } catch (e) {
-        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-    }
-    break;
+            case '#mp3':
+                if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
+                try {
+                    var url = await yts(q);
+                    reactMessage("❤️");
+                    let data = await ytmp3(url.all[0].url);
+                    var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
+                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
+                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
+                } catch (e) {
+                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                }
+                break;
+            case '#ytmp4':
+            case '#mp4':
+                if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
+                try {
+                    var url = await yts(q);
+                    reactMessage("❤️");
+                    let data = await ytmp4(url.all[0].url);
+                    reply('Tunggu sebentar, sedang mendownload...');
+                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
+                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
+                } catch (e) {
+                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+                }
+                break;
             default:
                 if (isGroup) return; // tidak dapat digunakan didalam grup
                 console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
