@@ -14,7 +14,7 @@ const { ytmp4, ytmp3, ttdl, fbdl } = require("ruhend-scraper");
 const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
-
+const lame = require('lame'); 
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -34,7 +34,7 @@ module.exports = async (conn, msg, m) => {
         const messageType = Object.keys(msg.message)[0]
         const from = msg.key.remoteJid;
         const msgKey = msg.key
-        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : type === "extendedTextMessage" && msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage && msg.message.extendedTextMessage.contextInfo?.quotedMessage.videoMessage ? msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage : "";
+        const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.captio[...]
         const args = chats.split(" ");
         const command = chats.toLowerCase().split(" ")[0] || "";
         const isGroup = msg.key.remoteJid.endsWith("@g.us");
@@ -50,8 +50,8 @@ module.exports = async (conn, msg, m) => {
         const content = JSON.stringify(msg.message)
         const isMedia = (messageType === 'imageMessage' || messageType === 'videoMessage')
         const isQuotedImage = (messageType === 'extendedTextMessage' || messageType === 'imageMessage') && content.includes('imageMessage')
-        const isQuotedVideo = (messageType === 'extendedTextMessage' || messageType === 'videoMessage') && content.includes('videoMessage')
-        
+        const isQuotedVideo = (messageType === 'extendedTextMessage' || messageType === 'videoMessage') && content includes('videoMessage')
+
         const isUrl = (url) => {
             return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi'))
         }
@@ -91,6 +91,36 @@ module.exports = async (conn, msg, m) => {
                 return path_file
             }
         }
+
+        async function compressAudio(inputBuffer, callback) {
+            const encoder = new lame.Encoder({
+                // input
+                channels: 2, // 2 channels (stereo)
+                bitDepth: 16, // 16-bit samples
+                sampleRate: 44100, // 44,100 Hz sample rate
+                
+                // output
+                bitRate: 128,
+                outSampleRate: 22050,
+                mode: lame.MONO // STEREO (default), JOINTSTEREO, DUALCHANNEL or MONO
+            });
+
+            const outputBuffer = [];
+
+            encoder.on('data', (chunk) => {
+                outputBuffer.push(chunk);
+            });
+
+            encoder.on('end', () => {
+                callback(null, Buffer.concat(outputBuffer));
+            });
+
+            encoder.on('error', (err) => {
+                callback(err);
+            });
+
+            encoder.end(inputBuffer);
+        }
         
         const reply = async (teks) => {
             await new Promise(resolve => setTimeout(resolve, 5000)); // Menambahkan delay 5 detik
@@ -120,10 +150,10 @@ module.exports = async (conn, msg, m) => {
         conn.sendPresenceUpdate("available", from);
         
         if (!isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(push[...]
         }
         if (isGroup && isCmd && !fromMe) {
-            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", color(groupName));
+            console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(push[...]
         }
         
         switch (command) {
@@ -163,7 +193,7 @@ _Media yang di privasi, tidak dapat di unduh._
                 break
             case 'runtime':
                 const runtime = process.uptime();
-                const runtimeMessage = `Bot telah berjalan selama ${Math.floor(runtime / 60)} menit ${Math.floor(runtime % 60)} detik.`;
+                const runtimeMessage = `Bot telah berjalan selama ${Math.floor(runtime / 60)} menit ${Math.floor runtime % 60)} detik.`;
                 reply(runtimeMessage)
                 break
             case 'igdl':
@@ -189,7 +219,7 @@ _Media yang di privasi, tidak dapat di unduh._
                 gifted.giftedtwitter(q).then(data => {
                    reactMessage("")
                    reply('Tunggu sebentar, sedang mengunduh...')
-                   var capt = `\`\`\`Enjoy\`\`\``
+                   var capt = `\`\`\`Enjoy\`\`\` 
                    conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg })
                    console.log(data.results[1].url)
                 }).catch(e => {
@@ -212,7 +242,7 @@ _Media yang di privasi, tidak dapat di unduh._
                 if (args.length < 2) return reply(`Input link untuk mendownload video dari TikTok.`)
                 reactMessage("")
                 ttdl(q).then(data => {
-                   var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``
+                   var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\`` 
                    conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg })
                    reply(`Jika kamu ingin mendownload background musik nya:\n${data.music}\n\n\`\`\`Sedang mengirim video...\`\`\``)
                 }).catch(e => {
@@ -222,14 +252,14 @@ _Media yang di privasi, tidak dapat di unduh._
             case 'ytmp3':
             case 'mp3':
             case 'play':
-    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
-    var url = await yts(q)
-    reactMessage("❤️")
-    ytmp3(url.all[0].url).then(data => {
-        var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
-        conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
+                if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
+                var url = await yts(q)
+                reactMessage("❤️")
+                ytmp3(url.all[0].url).then(data => {
+                    var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\`` 
+                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
 
-        // Mengompresi file audio sebelum mengirim sebagai voice note
+                    // Mengompresi file audio sebelum mengirim sebagai voice note
                     const inputBuffer = Buffer.from(data.audio, 'base64');
                     compressAudio(inputBuffer, (err, outputBuffer) => {
                         if (err) {
@@ -247,7 +277,7 @@ _Media yang di privasi, tidak dapat di unduh._
                 reactMessage("")
                 ytmp4(url.all[0].url).then(data => {
                     reply('Tunggu sebentar, sedang mendownload...')
-                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``
+                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\`` 
                     conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg })
                 }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
                 break
