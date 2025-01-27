@@ -53,7 +53,7 @@ module.exports = async (conn, msg, m) => {
         const pushname = msg.pushName;
         const q = chats.slice(command.length + 1, chats.length);
         const botNumber = conn.user.id.split(":")[0] + "@s.whatsapp.net";
-        const isCmd = chats.startsWith('#');
+        const isCmd = chats.startsWith('!');
         const content = JSON.stringify(msg.message);
         const isMedia = (messageType === 'imageMessage' || messageType === 'videoMessage');
         const isQuotedImage = (messageType === 'extendedTextMessage' || messageType === 'imageMessage') && content.includes('imageMessage');
@@ -104,23 +104,24 @@ module.exports = async (conn, msg, m) => {
         };
 
         const fakereply = (chat1, target) => {
-    conn.sendMessage(from, {
-        text: `${chat1}`,
-        contextInfo: {
-            mentionedJid: [target], // Mention target jika diperlukan
-            forwardingScore: 999999, 
-            isForwarded: true,
-            externalAdReply: {
-                showAdAttribution: true, // Tampilkan teks "Ad" di WhatsApp (opsional)
-                title: "Fany Aprilia", // Judul yang akan muncul
-                body: "Owner - Visit Website", // Subjudul atau deskripsi
-                sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
-                mediaType: 2,
-                renderLargerThumbnail: true, // Thumbnail besar
-            thumbnailUrl: "https://telegra.ph/file/6d25de614f92de742a88f.jpg" // Ganti dengan URL gambar valid
-        }
-    }
-});
+            conn.sendMessage(from, {
+                text: `${chat1}`,
+                contextInfo: {
+                    mentionedJid: [target], 
+                    forwardingScore: 999999, 
+                    isForwarded: true,
+                    externalAdReply: {
+                        showAdAttribution: true, 
+                        title: "Fany Aprilia", 
+                        body: "Owner - Visit Website", 
+                        sourceUrl: "https://xenovia.com", 
+                        mediaType: 2,
+                        renderLargerThumbnail: true, 
+                        thumbnailUrl: "https://telegra.ph/file/6d25de614f92de742a88f.jpg" 
+                    }
+                }
+            }, { quoted: msg });
+        };
         
         const reactMessage = (react) => {
             var reactMsg = {
@@ -145,11 +146,39 @@ module.exports = async (conn, msg, m) => {
         if (isGroup && isCmd && !fromMe) {
             console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname, "lightblue"), "in", color(groupName, "lightgreen"));
         }
-        
+
+        async function handleYtmp3() {
+            if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
+            try {
+                var url = await yts(q);
+                reactMessage("");
+                let data = await ytmp3(url.all[0].url);
+                var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
+                conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
+                conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
+            } catch (e) {
+                reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+            }
+        }
+
+        async function handleYtmp4() {
+            if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
+            try {
+                var url = await yts(q);
+                reactMessage("");
+                let data = await ytmp4(url.all[0].url);
+                reply('Tunggu sebentar, sedang mendownload...');
+                var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
+                conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
+            } catch (e) {
+                reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+            }
+        }
+
         switch (command) {
-            case '#start':
-            case '#menu':
-            case '#help':
+            case 'start':
+            case 'menu':
+            case 'help':
                 var textReply = `Hai ${pushname} 👋🏻
 Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini, dan juga di support oleh kecerdasan buatan (AI).
 
@@ -157,20 +186,20 @@ Aku adalah Bot WhatsApp, aku dapat mengunduh media seperti yang ada dibawah ini,
 • *Penggunaan* : _Ajukan pertanyaan langsung tanpa perintah apa pun_
 
 📢 *YOUTUBE DOWNLOADER*
-• *Perintah* : #mp3 / #mp4 _input judul_
-• *Contoh* : #mp3 / #mp4 birds of a feather
+• *Perintah* : !mp3 / !mp4 _input judul_
+• *Contoh* : !mp3 / !mp4 birds of a feather
 💌 *INSTAGRAM DOWNLOADER*
-• *Perintah* : #igdl _link insta_
-• *Contoh* : #igdl www.instagram.com/p/xxx/
+• *Perintah* : !igdl _link insta_
+• *Contoh* : !igdl www.instagram.com/p/xxx/
 💃🏻 *TIKTOK DOWNLOADER*
-• *Perintah* : #ttdl _link tiktok_
-• *Contoh* : #ttdl https://vt.tiktok.com/xxx/
+• *Perintah* : !ttdl _link tiktok_
+• *Contoh* : !ttdl https://vt.tiktok.com/xxx/
 👥 *FACEBOOK DOWNLOADER*
-• *Perintah* : #fbdl _link fb_
-• *Contoh* : #fbdl www.facebook.com/reel/xxx
+• *Perintah* : !fbdl _link fb_
+• *Contoh* : !fbdl www.facebook.com/reel/xxx
 👀 *TWITTER/X DOWNLOADER*
-• *Perintah* : #xdl / #twtdl _link twitter_
-• *Contoh* : #xdl https://x.com/link
+• *Perintah* : !xdl / !twtdl _link twitter_
+• *Contoh* : !xdl https://x.com/link
 
 _Media yang di privasi, tidak dapat di unduh._
 
@@ -179,10 +208,20 @@ _Media yang di privasi, tidak dapat di unduh._
 Visit us at: xenovia.com`;
                 fakereply(textReply, from);
                 break;
-            case '#igdl':
+            case 'ping':
+                reply('Pong! Bot is active.');
+                break;
+            case 'runtime':
+                const uptime = process.uptime();
+                const hours = Math.floor(uptime / 3600);
+                const minutes = Math.floor((uptime % 3600) / 60);
+                const seconds = Math.floor(uptime % 60);
+                reply(`Bot has been running for ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`);
+                break;
+            case 'igdl':
                 if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
                 insta(q).then(dataIG => {
-                    reactMessage("❤️");
+                    reactMessage("");
                     if (dataIG.image) {
                         for (let i of dataIG.image) {
                             conn.sendMessage(from, {image: {url: i}}, {quoted: msg});
@@ -196,11 +235,11 @@ Visit us at: xenovia.com`;
                     }
                 }).catch(e => console.log(e), reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
                 break;
-            case '#twtdl':
-            case '#xdl':
+            case 'twtdl':
+            case 'xdl':
                 if (args.length < 2) return reply(`Input link untuk mendownload media dari Twitter/X.`);
                 gifted.giftedtwitter(q).then(data => {
-                    reactMessage("❤️");
+                    reactMessage("");
                     reply('Tunggu sebentar, sedang mengunduh...');
                     var capt = `\`\`\`Enjoy\`\`\``;
                     conn.sendMessage(from, { video: { url: data.results[1].url }, caption: capt }, { quoted: msg });
@@ -209,22 +248,22 @@ Visit us at: xenovia.com`;
                     reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
                 });
                 break;
-            case '#fbdl':
+            case 'fbdl':
                 if (args.length < 2) return reply(`Input link untuk mendownload media dari Facebook.`);
                 fbdl(q).then(data => {
                     var dataFB = `\`\`\`Media Ditemukan\`\`\`\n*Resolusi:* ${data.data[0].resolution}`;
                     conn.sendMessage(from, { video: { url: data.data[0].url }, caption: dataFB }, { quoted: msg });
-                    reactMessage("❤️");
+                    reactMessage("");
                 }).catch(e => {
                     console.log(e);
                     reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
                 });
                 break;
-            case '#ttdl':
-            case '#tiktok':
-            case '#tiktokdl':
+            case 'ttdl':
+            case 'tiktok':
+            case 'tiktokdl':
                 if (args.length < 2) return reply(`Input link untuk mendownload video dari TikTok.`);
-                reactMessage("❤️");
+                reactMessage("");
                 ttdl(q).then(data => {
                     var dataTT = `\`\`\`Video Ditemukan\`\`\`\n\n*Username:* ${data.username}\n*Publish:* ${data.published}\n*Likes:* ${data.like}\n*Views:* ${data.views}\n\n\`\`\`Enjoy!\`\`\``;
                     conn.sendMessage(from, { video: { url: data.video_hd }, caption: dataTT }, { quoted: msg });
@@ -234,33 +273,13 @@ Visit us at: xenovia.com`;
                     reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
                 });
                 break;
-            case '#ytmp3':
-            case '#mp3':
-                if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
-                try {
-                    var url = await yts(q);
-                    reactMessage("❤️");
-                    let data = await ytmp3(url.all[0].url);
-                    var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-                    conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
-                    conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
-                } catch (e) {
-                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-                }
+            case 'ytmp3':
+            case 'mp3':
+                handleYtmp3();
                 break;
-            case '#ytmp4':
-            case '#mp4':
-                if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
-                try {
-                    var url = await yts(q);
-                    reactMessage("❤️");
-                    let data = await ytmp4(url.all[0].url);
-                    reply('Tunggu sebentar, sedang mendownload...');
-                    var dataVideo = `\`\`\`Video Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Enjoy!\`\`\``;
-                    conn.sendMessage(from, { video: { url: data.video }, caption: dataVideo }, { quoted: msg });
-                } catch (e) {
-                    reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-                }
+            case 'ytmp4':
+            case 'mp4':
+                handleYtmp4();
                 break;
             default:
                 if (isGroup) return; // tidak dapat digunakan didalam grup
@@ -288,7 +307,7 @@ Visit us at: xenovia.com`;
                         ]);
                         reply(result.response.text().trim());
                         fs.unlinkSync(media);
-                        return reactMessage("❤️");
+                        return reactMessage("");
                     } else {
                         const chat = model.startChat(conn.gemini[sender]);
                         let resdata = await chat.sendMessage(chats);
@@ -304,7 +323,7 @@ Visit us at: xenovia.com`;
                             }]
                         });
                         reply(resdata.response.text().trim());
-                        return reactMessage("❤️");
+                        return reactMessage("");
                     }
                 } catch(e) {
                     console.log(e);
