@@ -117,7 +117,7 @@ module.exports = async (conn, msg, m) => {
                 sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
                 mediaType: 2,
                 renderLargerThumbnail: true, // Thumbnail besar
-            thumbnailUrl: "https://images.app.goo.gl/BWqYfEuxzuv71e5n9" // Ganti dengan URL gambar valid
+            thumbnailUrl: "https://telegra.ph/file/6d25de614f92de742a88f.jpg" // Ganti dengan URL gambar valid
         }
     }
 });
