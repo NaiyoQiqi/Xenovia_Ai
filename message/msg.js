@@ -177,7 +177,7 @@ _Media yang di privasi, tidak dapat di unduh._
 (n) tolong gunakan bot dengan bijak.
 *Bot Created By Xenovia AI*
 Visit us at: xenovia.com`;
-          fakereply(textReply, from, "");
+          fakereply(textReply, from, "Xenovia AI");
     break;
             case '#igdl':
                 if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
@@ -235,24 +235,16 @@ Visit us at: xenovia.com`;
                 });
                 break;
             case '#ytmp3':
-case '#mp3':
-    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
-    
-    // Make sure this block of code is inside an async function
-    try {
-        var url = await yts(q);  // This works now because the function is async
-        reactMessage("❤️");
-        
-        // Proceed with the downloading process
-        ytmp3(url.all[0].url).then(data => {
-            var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-            conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg });
-            conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
-        }).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'));
-    } catch (e) {
-        reply('Maaf terjadi kesalahan saat memproses permintaan.');
-    }
-    break;
+			case '#mp3':
+				if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`)
+				var url = await yts(q)
+				reactMessage("❤️")
+				ytmp3(url.all[0].url).then(data => {
+					var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``
+					conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio}, { quoted: msg })
+					conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg })
+				}).catch(e => reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.'))
+				break
             case '#ytmp4':
             case '#mp4':
                 if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
