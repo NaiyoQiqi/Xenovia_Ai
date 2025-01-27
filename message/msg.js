@@ -118,10 +118,9 @@ const fakereply = (chat1, target) => {
                 body: "Owner - Visit Website", // Subjudul atau deskripsi
                 sourceUrl: "https://xenovia.com", // URL tujuan ketika diklik
                 mediaType: 1 // Tipe media (1 untuk teks, 2 untuk gambar, dll.)
-                          }
-        }
-    }, { quoted: msg }); // Pesan yang di-quote
-};
+}
+    }
+});
         
         const reactMessage = (react) => {
             var reactMsg = {
@@ -178,7 +177,7 @@ _Media yang di privasi, tidak dapat di unduh._
 (n) tolong gunakan bot dengan bijak.
 *Bot Created By Xenovia AI*
 Visit us at: xenovia.com`;
-          fakereply(textReply, from, "*Bot Created By Xenovia AI*");
+          fakereply(textReply, from, "");
     break;
             case '#igdl':
                 if (args.length < 2) return reply(`Input link dari Instagram, untuk mendownload media yang di inginkan.`);
