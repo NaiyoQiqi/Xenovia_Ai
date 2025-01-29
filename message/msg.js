@@ -111,12 +111,16 @@ module.exports = async (conn, msg, m) => {
             }
             
             const reply = (teks) => {
-                conn.sendMessage(from, { text: `${teks}` }, { quoted: msg });
+                const timestamp = moment().format('HH:mm'); // Format jam & menit saja
+                const botReply = `${teks}\n\nAI (${timestamp})`; // Custom UI
+                conn.sendMessage(from, { text: botReply }, { quoted: msg });
             };
 
             const fakereply = (chat1, target) => {
+                const timestamp = moment().format('HH:mm'); // Format jam & menit saja
+                const botReply = `${chat1}\n\nAI (${timestamp})`; // Custom UI
                 conn.sendMessage(from, {
-                    text: `${chat1}`,
+                    text: botReply,
                     contextInfo: {
                         mentionedJid: [target], 
                         forwardingScore: 999999, 
