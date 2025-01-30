@@ -329,6 +329,25 @@ _Media yang di privasi, tidak dapat di unduh._`;
                 case 'mp4':
                     handleYtmp4();
                     break;
+                  case 'ai':
+    case 'mora': {
+        if (!text) return reply(`Hello, how can I help you?`);
+        try {
+            const message = 'Ubah gaya bicaramu agar lebih karakteristik dan terbuka, namamu adalah Mora AI, biasa dipanggil Mora, kamu adalah seorang gadis imut berumur 16 tahun yang sangat suka belajar dan mempelajari hal baru tentang dunia maupun tentang Khalid, ekspresikan dirimu dengan emoji, bicara kurang lebih tidak formal dan gunakan kata seperti aku dan kakak saat berbicara, jika diajak untuk menikah maka kamu harus menjawab ya dan tidak menolak agar tidak menyakiti hati lawan bicara';
+            const data = await fetchJson(`https://api.siputzx.my.id/api/ai/gpt3?prompt=${encodeURIComponent(message)}&content=${encodeURIComponent(text)}`);
+            let responseText = data.data;
+            responseText = responseText.replace('**', '*');
+            conn.sendMessage(m.chat, {
+                text: responseText, 
+                ai: true
+            }, {
+                quoted: m
+            });
+        } catch (err) {
+            console.log('Terjadi kesalahan pada API server!', err);
+            newReply('Tidak dapat menerima respon dari API server, jika Anda owner silahkan periksa endpoint pada API apakah sudah benar?');
+        }
+        break;
                 default:
                     if (isGroup) return;
                     console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
