@@ -346,7 +346,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
             });
         } catch (err) {
             console.log('Terjadi kesalahan pada API server!', err);
-            newReply('Tidak dapat menerima respon dari API server, jika Anda owner silahkan periksa endpoint pada API apakah sudah benar?');
+            reply('Tidak dapat menerima respon dari API server, jika Anda owner silahkan periksa endpoint pada API apakah sudah benar?');
         }
         break;
     }
