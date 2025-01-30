@@ -27,33 +27,33 @@ moment.tz.setDefault("Asia/Jakarta").locale("id");
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-// Middleware for AI Labels
-const originalSendMessage = conn.sendMessage.bind(conn);
+module.exports = async (conn, msg, m) => { // Ensure conn is passed here
+    // Middleware for AI Labels
+    const originalSendMessage = conn.sendMessage.bind(conn);
 
-conn.sendMessage = async (jid, content, options = {}) => {
-    const isAIResponse = options.isAI || false;
-    const timestamp = moment().format('HH:mm');
-    
-    if (isAIResponse) {
-        const label = `\n\n AI✨• ${timestamp}`;
+    conn.sendMessage = async (jid, content, options = {}) => {
+        const isAIResponse = options.isAI || false;
+        const timestamp = moment().format('HH:mm');
         
-        if (content.text) {
-            content.text += label;
+        if (isAIResponse) {
+            const label = `\n\n AI✨• ${timestamp}`;
+            
+            if (content.text) {
+                content.text += label;
+            }
+            
+            if (content.caption || content.image || content.video) {
+                content.caption = (content.caption || '') + label;
+            }
+            
+            if (content.document && !content.fileName.includes('AI')) {
+                content.fileName = `AI_${content.fileName}`;
+            }
         }
         
-        if (content.caption || content.image || content.video) {
-            content.caption = (content.caption || '') + label;
-        }
-        
-        if (content.document && !content.fileName.includes('AI')) {
-            content.fileName = `AI_${content.fileName}`;
-        }
-    }
-    
-    return originalSendMessage(jid, content, options);
-};
+        return originalSendMessage(jid, content, options);
+    };
 
-module.exports = async (conn, msg, m) => {
     try {
         await delay(5000);
         if (msg.key.fromMe) return;
@@ -387,8 +387,4 @@ _Media yang di privasi, tidak dapat di unduh._`;
             }
         } catch (err) {
             console.log(color("[ERROR]", "red"), err);
-        }
-    } catch (err) {
-        console.log(color("[ERROR]", "red"), err);
-    }
-};
+            }
