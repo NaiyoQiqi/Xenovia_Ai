@@ -387,5 +387,8 @@ _Media yang di privasi, tidak dapat di unduh._`;
             }
         } catch (err) {
             console.log(color("[ERROR]", "red"), err);
-            }
+        }
+    } catch (err) {
+        console.log(color("[ERROR]", "red"), err);
+    }
 };
