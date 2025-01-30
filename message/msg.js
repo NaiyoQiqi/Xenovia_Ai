@@ -14,6 +14,20 @@ const { ytmp4, ytmp3, ttdl, fbdl } = require("ruhend-scraper");
 const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
+const fetch = require('node-fetch');
+
+async function fetchJson(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching JSON:', error);
+        throw error;
+    }
+}
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -27,6 +41,7 @@ moment.tz.setDefault("Asia/Jakarta").locale("id");
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// ... rest of the code remains unchanged
 module.exports = async (conn, msg, m) => { // Ensure conn is passed here
     // Middleware for AI Labels
     const originalSendMessage = conn.sendMessage.bind(conn);
