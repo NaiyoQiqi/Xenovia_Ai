@@ -348,6 +348,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
             newReply('Tidak dapat menerima respon dari API server, jika Anda owner silahkan periksa endpoint pada API apakah sudah benar?');
         }
         break;
+    }
                 default:
                     if (isGroup) return;
                     console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
