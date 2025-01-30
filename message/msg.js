@@ -27,18 +27,41 @@ moment.tz.setDefault("Asia/Jakarta").locale("id");
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// Middleware for AI Labels
+const originalSendMessage = conn.sendMessage.bind(conn);
+
+conn.sendMessage = async (jid, content, options = {}) => {
+    const isAIResponse = options.isAI || false;
+    const timestamp = moment().format('HH:mm');
+    
+    if (isAIResponse) {
+        const label = `\n\n AI✨• ${timestamp}`;
+        
+        if (content.text) {
+            content.text += label;
+        }
+        
+        if (content.caption || content.image || content.video) {
+            content.caption = (content.caption || '') + label;
+        }
+        
+        if (content.document && !content.fileName.includes('AI')) {
+            content.fileName = `AI_${content.fileName}`;
+        }
+    }
+    
+    return originalSendMessage(jid, content, options);
+};
+
 module.exports = async (conn, msg, m) => {
     try {
-        // Delay 5 detik
         await delay(5000);
-
         if (msg.key.fromMe) return;
 
         try {
             const { type, isQuotedMsg, quotedMsg, mentioned, now, fromMe } = msg;
             const toJSON = (j) => JSON.stringify(j, null, "\t");
 
-            // Pastikan msg.message tidak undefined/null
             if (!msg.message || typeof msg.message !== "object") {
                 console.log("[WARNING] msg.message is undefined or invalid");
                 return;
@@ -111,31 +134,35 @@ module.exports = async (conn, msg, m) => {
             }
             
             const reply = (teks) => {
-                const timestamp = moment().format('HH:mm'); // Format jam & menit saja
-                const botReply = `${teks}\n\nAI (${timestamp})`; // Custom UI
-                conn.sendMessage(from, { text: botReply }, { quoted: msg });
+                conn.sendMessage(
+                    from, 
+                    { text: teks }, 
+                    { quoted: msg, isAI: true }
+                );
             };
 
             const fakereply = (chat1, target) => {
-                const timestamp = moment().format('HH:mm'); // Format jam & menit saja
-                const botReply = `${chat1}\n\nAI (${timestamp})`; // Custom UI
-                conn.sendMessage(from, {
-                    text: botReply,
-                    contextInfo: {
-                        mentionedJid: [target], 
-                        forwardingScore: 999999, 
-                        isForwarded: true,
-                        externalAdReply: {
-                            showAdAttribution: true, 
-                            title: "Xenovia AI", 
-                            body: "Visit Website", 
-                            sourceUrl: "https://midea.com", 
-                            mediaType: 2,
-                            renderLargerThumbnail: true, 
-                            thumbnailUrl: "https://images.app.goo.gl/fKL1ptbp6ZuPeYeY8" 
+                conn.sendMessage(
+                    from,
+                    {
+                        text: chat1,
+                        contextInfo: {
+                            mentionedJid: [target],
+                            forwardingScore: 999999,
+                            isForwarded: true,
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: "Xenovia AI",
+                                body: "Visit Website",
+                                sourceUrl: "https://midea.com",
+                                mediaType: 2,
+                                renderLargerThumbnail: true,
+                                thumbnailUrl: "https://images.app.goo.gl/fKL1ptbp6ZuPeYeY8"
+                            }
                         }
-                    }
-                }, { quoted: msg });
+                    }, 
+                    { quoted: msg, isAI: true }
+                );
             };
             
             const reactMessage = (react) => {
@@ -303,7 +330,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
                     handleYtmp4();
                     break;
                 default:
-                    if (isGroup) return; // tidak dapat digunakan di dalam grup
+                    if (isGroup) return;
                     console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${chats}"`);
                     conn.sendPresenceUpdate("composing", from);
                     try {
@@ -327,8 +354,7 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                 },
                                 caption
                             ]);
-                            // Tambahkan label AI pada respons
-                            const aiResponse = `[XenoviaAI] ${result.response.text().trim()}`;
+                            const aiResponse = result.response.text().trim();
                             reply(aiResponse);
                             fs.unlinkSync(media);
                             return reactMessage("");
@@ -345,13 +371,11 @@ _Media yang di privasi, tidak dapat di unduh._`;
                                     parts: [
                                         {
                                             text: resdata.response.text().trim(),
-                                            // Remove the ai flag
                                         },
                                     ],
                                 }
                             );
-                            // Tambahkan label AI pada respons
-                            const aiResponse = `[XenoviaAI] ${resdata.response.text().trim()}`;
+                            const aiResponse = resdata.response.text().trim();
                             reply(aiResponse);
                             return reactMessage("");
                         }
