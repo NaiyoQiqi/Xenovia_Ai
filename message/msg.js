@@ -134,19 +134,51 @@ module.exports = async (conn, msg, m) => {
         }
 
         async function handleYtmp3() {
-            if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
-            try {
-                var url = await yts(q);
-                reactMessage("");
-                let data = await ytmp3(url.all[0].url);
-                var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
-                conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
-                conn.sendMessage(from, { document: { url: data.audio }, fileName: `${data.title}.mp3`, mimetype: 'audio/mp3' }, { quoted: msg });
-            } catch (e) {
-                reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
-            }
-        }
+    if (args.length < 2) return reply(`Input judul untuk mendownload mp3.`);
+    try {
+        var url = await yts(q);
+        reactMessage("");
+        let data = await ytmp3(url.all[0].url);
+        var dataAudio = `\`\`\`Lagu Ditemukan\`\`\`\n\nJudul: ${data.title}\nChannel: ${data.author}\nDurasi: ${data.duration}\n\n\`\`\`Mengirim...\`\`\``;
+        conn.sendMessage(from, { image: { url: data.thumbnail }, caption: dataAudio }, { quoted: msg });
 
+        const audioPath = `./downloads/${data.title}.mp3`;
+
+        // Unduh file audio ke server
+        const file = fs.createWriteStream(audioPath);
+        https.get(data.audio, function(response) {
+            response.pipe(file);
+            file.on('finish', async function() {
+                file.close();
+
+                // Konversi file audio setelah diunduh
+                const outputAudioPath = `./downloads/${data.title}_converted.mp3`;
+                try {
+                    await convertAudio(audioPath, outputAudioPath, 'mp3', '128k');
+                    console.log('Konversi audio berhasil.');
+
+                    // Kirim file audio yang telah dikonversi sebagai audio
+                    const audioBuffer = fs.readFileSync(outputAudioPath);
+                    conn.sendMessage(from, { audio: audioBuffer, mimetype: 'audio/mp3' }, { quoted: msg });
+
+                    // Hapus file sementara setelah pengiriman
+                    fs.unlinkSync(audioPath);
+                    fs.unlinkSync(outputAudioPath);
+                } catch (err) {
+                    console.error('Konversi audio gagal:', err);
+                    reply('Maaf terjadi kesalahan saat mengonversi audio.');
+                }
+            });
+        }).on('error', function(err) {
+            fs.unlinkSync(audioPath);
+            console.error('Gagal mengunduh audio:', err);
+            reply('Maaf terjadi kesalahan saat mengunduh audio.');
+        });
+    } catch (e) {
+        reply('Maaf terjadi kesalahan, sistem error atau link yang dikirimkan tidak benar.');
+    }
+}
+       
         async function handleYtmp4() {
             if (args.length < 2) return reply(`Input judul untuk mendownload mp4.`);
             try {
