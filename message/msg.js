@@ -14,6 +14,7 @@ const { ytmp4, ytmp3, ttdl, fbdl } = require("ruhend-scraper");
 const insta = require("priyansh-ig-downloader");
 const gifted = require("gifted-dls");
 const imgbb = require("imgbb-uploader");
+const convertAudio = require('../lib/audioConverter');
 
 /**           Gemini AI                */ 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
