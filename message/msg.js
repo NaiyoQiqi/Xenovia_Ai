@@ -42,6 +42,10 @@ const gifted = require("gifted-dls");
 
 const imgbb = require("imgbb-uploader");
 
+const os = require("os");
+const { performance } = require('perf_hooks');
+const nou = require("nou"); // Assuming you have a module named 'nou' for certain functionalities
+
 
 
 /**           Gemini AI                */ 
@@ -80,7 +84,7 @@ module.exports = async (conn, msg, m) => {
 
 		const msgKey = msg.key
 
-		const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : type === "videoMessage" && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : type === "extendedTextMessage" && msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage && msg.message.extendedTextMessage.contextInfo?.quotedMessage.videoMessage ? msg.message.extendedTextMessage.contextInfo?.quotedMessage.imageMessage : "";
+		const chats = type === "conversation" && msg.message.conversation ? msg.message.conversation : type === "imageMessage" && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : type =[...]
 
 		const args = chats.split(" ");
 
@@ -254,14 +258,65 @@ module.exports = async (conn, msg, m) => {
 
 		if (isGroup && isCmd && !fromMe) {
 
-			console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", color(groupName));
+			console.log("->[\x1b[1;32mCMD\x1b[1;37m]", color(moment(msg.messageTimestamp * 1000).format("DD/MM/YYYY HH:mm:ss"), "yellow"), color(`${command} [${args.length}]`), "from", color(pushname), "in", c[...]
 
 		}
 
 		
 
 		switch (command) {
-
+			case 'speed':
+			case 'ping': {
+				try {
+					const used = process.memoryUsage();
+					const cpus = os.cpus().map(cpu => {
+						cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0);
+						return cpu;
+					});
+					const cpu = cpus.reduce((last, cpu, _, { length }) => {
+						last.total += cpu.total;
+						last.speed += cpu.speed / length;
+						last.times.user += cpu.times.user;
+						last.times.nice += cpu.times.nice;
+						last.times.sys += cpu.times.sys;
+						last.times.idle += cpu.times.idle;
+						last.times.irq += cpu.times.irq;
+						return last;
+					}, {
+						speed: 0,
+						total: 0,
+						times: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 }
+					});
+					let start = performance.now();
+					let end = performance.now();
+					let latensi = end - start;
+					let osInfo = await nou.os.oos();
+					let storage = await nou.drive.info();
+					let respon = `✨ *Informasi Bot WhatsApp* ✨\n\n📡 *Jaringan Server*\n · *Ping:* ${latensi.toFixed(4)} Detik\n\n🖥️ *Informasi Server*\n · *OS:* ${osInfo}\n · *IP Address:* ${nou.os.ip()}\n · *Tipe OS:* ${nou.os.type()}\n\n💾 *RAM:*\n · *Total:* ${formatp(os.totalmem())}\n · *Digunakan:* ${formatp(os.totalmem() - os.freemem())}\n\n📂 *Penyimpanan:*\n · *Total:* ${storage.totalGb} GB\n · *Digunakan:* ${storage.usedGb} GB (${storage.usedPercentage}%)\n · *Tersedia:* ${storage.freeGb} GB (${storage.freePercentage}%)\n\n⏳ *Waktu Aktif Server:*\n${runtime(process.uptime())}\n\n⚙️ *CPU (${cpus.length} Core)*\n · *Model:* ${cpus[0].model.trim()}\n · *Kecepatan:* ${cpu.speed} MHz\n${Object.keys(cpu.times).map(type => ` · *${type}*: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}\n\nTetap semangat ya kak! Xenovia selalu siap membantu 🥰`;
+					await conn.sendMessage(from, {
+						text: respon,
+						contextInfo: {
+							mentionedJid: [msg.sender],
+							forwardingScore: 999999, 
+							isForwarded: true, 
+							forwardedNewsletterMessageInfo: {
+								newsletterName: 'Bot Information',
+								newsletterJid: 'bot@info',
+							},
+							externalAdReply: {
+								title: 'Ping Speed Test',
+								thumbnailUrl: 'https://example.com/thumbnail.jpg',
+								sourceUrl: 'https://github.com/NaiyoQiqi/Xenovia_Ai',
+								mediaType: 1,
+								renderLargerThumbnail: true
+							}
+						}
+					}, { quoted: msg });
+				} catch (err) {
+					console.error(err);
+				}
+				break;
+			}
 			case '#start':
 
 			case '#menu':
