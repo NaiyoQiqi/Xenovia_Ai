@@ -373,7 +373,7 @@ _Media yang di privasi, tidak dapat di unduh._
 
 (n) tolong gunakan bot dengan bijak.
 
-*Bot Created By @febbyadityan*`
+*Bot Created By @feyy.s15*`
 
 				reply(textReply)
 
